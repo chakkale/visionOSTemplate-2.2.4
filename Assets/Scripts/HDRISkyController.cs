@@ -49,13 +49,13 @@ public class HDRISkyController : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("SkyboxController: Starting initialization...");
+        //Debug.Log("SkyboxController: Starting initialization...");
         
         // If skybox sphere isn't assigned, try to find it on this GameObject
         if (skyboxSphere == null)
         {
             skyboxSphere = transform;
-            Debug.Log("No skybox sphere assigned, using this GameObject's transform");
+            //Debug.Log("No skybox sphere assigned, using this GameObject's transform");
         }
 
         // Check if input actions are assigned
@@ -68,7 +68,7 @@ public class HDRISkyController : MonoBehaviour
         currentRotation = skyboxSphere.eulerAngles.y;
         targetRotation = currentRotation;
         
-        Debug.Log("SkyboxController: Initialization complete");
+        //Debug.Log("SkyboxController: Initialization complete");
     }
 
     private void Update()
@@ -110,7 +110,7 @@ public class HDRISkyController : MonoBehaviour
                     // Starting a new pinch - store the initial position
                     lastHandPosition = currentHandPosition;
                     wasPinching = true;
-                    Debug.Log($"Pinch started at position {currentHandPosition}");
+                    //Debug.Log($"Pinch started at position {currentHandPosition}");
                 }
                 else
                 {
@@ -125,12 +125,12 @@ public class HDRISkyController : MonoBehaviour
                     targetRotation = Mathf.Repeat(targetRotation + rotationAmount, 360f);
                     
                     // Log rotation update for debugging
-                    if (Mathf.Abs(rotationAmount) > 0.01f)
-                    {
-                        Debug.Log($"Setting Target Rotation - Movement: {horizontalDelta:F3}, " +
-                                $"Rotation Change: {rotationAmount:F3}, " +
-                                $"Target: {targetRotation:F1}");
-                    }
+                    //if (Mathf.Abs(rotationAmount) > 0.01f)
+                    //{
+                    //    Debug.Log($"Setting Target Rotation - Movement: {horizontalDelta:F3}, " +
+                    //            $"Rotation Change: {rotationAmount:F3}, " +
+                    //            $"Target: {targetRotation:F1}");
+                    //}
                     
                     // Store position for next frame
                     lastHandPosition = currentHandPosition;
@@ -168,6 +168,17 @@ public class HDRISkyController : MonoBehaviour
         if (angle > 180f)
             return angle - 360f;
         return angle;
+    }
+
+    // Add this method to allow RoomManager to update the sphere reference
+    public void SetSkyboxSphere(Transform newSphere)
+    {
+        skyboxSphere = newSphere;
+        if (skyboxSphere != null)
+        {
+            currentRotation = skyboxSphere.eulerAngles.y;
+            targetRotation = currentRotation;
+        }
     }
 
 #if UNITY_EDITOR

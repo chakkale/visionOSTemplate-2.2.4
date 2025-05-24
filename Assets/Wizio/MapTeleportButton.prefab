@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 1151011423282725069}
   - component: {fileID: 1824407964098241766}
   - component: {fileID: 6336880672126882878}
+  - component: {fileID: 2390198721184785961}
   m_Layer: 0
   m_Name: MapTeleportButton
   m_TagString: Untagged
@@ -165,7 +166,19 @@ MonoBehaviour:
       m_Calls: []
   m_HoverEntered:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2390198721184785961}
+        m_TargetAssemblyTypeName: RoomTeleportButton, Assembly-CSharp
+        m_MethodName: TeleportToRoom
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_HoverExited:
     m_PersistentCalls:
       m_Calls: []
@@ -195,7 +208,19 @@ MonoBehaviour:
       m_Calls: []
   m_Activated:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2390198721184785961}
+        m_TargetAssemblyTypeName: RoomTeleportButton, Assembly-CSharp
+        m_MethodName: TeleportToRoom
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_Deactivated:
     m_PersistentCalls:
       m_Calls: []
@@ -236,10 +261,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6978618b5a977451faa7ef70fa8ec40b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minScale: {x: 200, y: 200, z: 200}
-  maxScale: {x: 300, y: 200, z: 300}
+  minScale: {x: 1, y: 1, z: 1}
+  maxScale: {x: 1.5, y: 1, z: 1.5}
   duration: 1
   easeType: 4
+--- !u!114 &2390198721184785961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 772995295998193578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14f3a5bc4598e4582a78723e6e186eac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roomData: {fileID: 0}
 --- !u!1001 &6446572481313636490
 PrefabInstance:
   m_ObjectHideFlags: 0
