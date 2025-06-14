@@ -59,29 +59,20 @@ Shader "Stereoscopic/Stereo360Panorama_VerticalStack"
 				return float2(0.5, 1.0) - sphereCoords;
 			}
 			
-			// Improved texture sampling function to handle edge seams
+			// Robust texture sampling function to handle UV wrapping with precision
 			fixed4 SamplePanoramaWithEdgeFix(sampler2D tex, float2 uv)
 			{
-				// Add a small epsilon to prevent precision issues at the seam
-				float epsilon = 0.0001;
+				// Handle precision issues at the seam boundary
+				// Add a tiny offset to avoid exact boundary conditions
+				float epsilon = 0.00001;
 				
-				// Check if we're near the UV edges on the x-axis (the seam)
-				if (uv.x < epsilon) {
-					// Near the left edge - blend with the right edge
-					fixed4 color1 = tex2D(tex, uv);
-					fixed4 color2 = tex2D(tex, float2(1.0 - epsilon, uv.y));
-					return lerp(color2, color1, uv.x / epsilon);
-				}
-				else if (uv.x > 1.0 - epsilon) {
-					// Near the right edge - blend with the left edge
-					fixed4 color1 = tex2D(tex, uv);
-					fixed4 color2 = tex2D(tex, float2(epsilon, uv.y));
-					return lerp(color1, color2, (uv.x - (1.0 - epsilon)) / epsilon);
-				}
-				else {
-					// Not near edges, regular sampling
-					return tex2D(tex, uv);
-				}
+				// Ensure UV coordinates are in valid range with precision handling
+				uv.x = frac(uv.x + epsilon) - epsilon;
+				uv.x = clamp(uv.x, 0.0, 0.999999); // Prevent exact 1.0 to avoid seam
+				uv.y = saturate(uv.y);
+				
+				// Use filtered sampling to reduce precision artifacts
+				return tex2Dlod(tex, float4(uv, 0, 0));
 			}
 			
 			fixed4 frag(v2f i) : SV_Target
