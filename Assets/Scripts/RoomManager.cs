@@ -149,6 +149,11 @@ public class RoomManager : MonoBehaviour
             var pulser = btn.GetComponent<ScalePulser>();
             Vector3 targetScale = scaleUp && pulser != null ? pulser.OriginalScale : Vector3.zero;
             Debug.Log($"[RoomManager] Animating {btn.name} from {btn.transform.localScale} to {targetScale}");
+            
+            // Only disable pulser before animation if scaling up (to prevent it from interfering)
+            // For scaling down, disable it after starting the animation to preserve current scale
+            if (pulser != null && scaleUp) pulser.enabled = false;
+            
             btn.transform.DOScale(targetScale, duration)
                 .SetEase(ease)
                 .OnComplete(() => {
@@ -157,8 +162,12 @@ public class RoomManager : MonoBehaviour
                         pulser.enabled = true;
                         pulser.RestartPulse();
                     }
+                    else if (pulser != null && !scaleUp)
+                    {
+                        // Disable pulser after scale-down completes
+                        pulser.enabled = false;
+                    }
                 });
-            if (pulser != null) pulser.enabled = false;
         }
     }
 
