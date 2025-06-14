@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b67c34e8de2d14b50b64cabb7640902f, type: 3}
+  m_Name: E-4D-C02
+  m_EditorClassIdentifier: 
+  roomName: E-4D-C02
+  roomTexture: {fileID: 2800000, guid: 9ef44f4c44ad24157a23b739b613adfa, type: 3}
+  roomPrefab: {fileID: 3183911297692714578, guid: 5ded4477b42e448b2b67828499fac12c, type: 3}
