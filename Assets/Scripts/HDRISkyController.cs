@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
+using UnityEngine.XR.Interaction.Toolkit.UI;
 
 
 public class HDRISkyController : MonoBehaviour
@@ -8,6 +10,8 @@ public class HDRISkyController : MonoBehaviour
     [SerializeField] private float rotationSpeed = 500f;  // Increased base rotation speed
     [SerializeField] private float smoothSpeed = 10f;     // Controls how smooth the rotation transitions are
     [SerializeField] private Transform skyboxSphere;      // Reference to the sphere with reversed normals
+    [SerializeField] private LayerMask uiLayerMask = 1 << 5; // Layer mask for UI elements (default: layer 5)
+    [SerializeField] private bool debugUIInteraction = false; // Enable debug logging for UI interaction detection
     
     // Input System references
     [Header("Input")]
@@ -73,18 +77,13 @@ public class HDRISkyController : MonoBehaviour
 
     private void Update()
     {
-        // Block dome rotation if the right hand ray interactor is actively selecting an object on the UI layer
-        if (rightHandRayInteractor != null && rightHandRayInteractor.hasSelection)
+        // Check if UI is being interacted with using multiple methods
+        if (IsUIBeingInteracted())
         {
-            GameObject selectedObject = null;
-            if (rightHandRayInteractor.interactablesSelected.Count > 0)
-                selectedObject = rightHandRayInteractor.interactablesSelected[0].transform.gameObject;
-
-            if (selectedObject != null && selectedObject.layer == 5) // 5 is the UI layer
-            {
-                wasPinching = false;
-                return;
-            }
+            if (debugUIInteraction)
+                Debug.Log("UI interaction detected - blocking sphere rotation");
+            wasPinching = false;
+            return;
         }
 
         // Early exit if required components are missing
@@ -159,6 +158,47 @@ public class HDRISkyController : MonoBehaviour
             Vector3 currentEuler = skyboxSphere.eulerAngles;
             skyboxSphere.eulerAngles = new Vector3(currentEuler.x, currentRotation, currentEuler.z);
         }
+    }
+
+    // Check if ray is pointing at any UI layer object
+    private bool IsUIBeingInteracted()
+    {
+        // Perform a general physics raycast to detect ANY object on UI layers, not just interactables
+        if (rightHandRayInteractor != null)
+        {
+            // Get the ray from the interactor
+            if (rightHandRayInteractor.TryGetCurrent3DRaycastHit(out RaycastHit interactorHit))
+            {
+                // First check the XR interactor hit
+                if (interactorHit.transform != null && IsOnUILayer(interactorHit.transform.gameObject.layer))
+                {
+                    if (debugUIInteraction)
+                        Debug.Log($"XR Ray pointing at UI object '{interactorHit.transform.gameObject.name}' on layer {interactorHit.transform.gameObject.layer} - blocking sphere rotation");
+                    return true;
+                }
+            }
+
+            // Also perform a general physics raycast to catch non-interactable UI objects
+            Transform rayTransform = rightHandRayInteractor.transform;
+            Vector3 rayOrigin = rayTransform.position;
+            Vector3 rayDirection = rayTransform.forward;
+            
+            // Raycast specifically against UI layer objects
+            if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit physicsHit, Mathf.Infinity, uiLayerMask))
+            {
+                if (debugUIInteraction)
+                    Debug.Log($"Physics raycast hit UI object '{physicsHit.transform.gameObject.name}' on layer {physicsHit.transform.gameObject.layer} - blocking sphere rotation");
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // Helper method to check if a layer is in the UI layer mask
+    private bool IsOnUILayer(int layer)
+    {
+        return (uiLayerMask.value & (1 << layer)) != 0;
     }
 
     // Helper method to handle angle wrapping when interpolating rotations

@@ -187,7 +187,6 @@ GameObject:
   - component: {fileID: 4648521761081522177}
   - component: {fileID: 6572297759827149782}
   - component: {fileID: 8666214270460382620}
-  - component: {fileID: 2905926408320252475}
   m_Layer: 5
   m_Name: Element_10radius1
   m_TagString: Untagged
@@ -338,19 +337,7 @@ MonoBehaviour:
       m_Calls: []
   m_HoverEntered:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2905926408320252475}
-        m_TargetAssemblyTypeName: RoomTeleportButton, Assembly-CSharp
-        m_MethodName: TeleportToRoom
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_HoverExited:
     m_PersistentCalls:
       m_Calls: []
@@ -409,19 +396,6 @@ MonoBehaviour:
       m_EnablePokeAngleThreshold: 0
       m_PokeAngleThreshold: 45
     m_Variable: {fileID: 0}
---- !u!114 &2905926408320252475
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6527115780408078068}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 14f3a5bc4598e4582a78723e6e186eac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  roomData: {fileID: 11400000, guid: 46b6475a7b5164a01bbbabea438646ba, type: 2}
 --- !u!1001 &4252643961913697255
 PrefabInstance:
   m_ObjectHideFlags: 0

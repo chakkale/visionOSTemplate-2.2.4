@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7061119638873903756
 Transform:
   m_ObjectHideFlags: 0
@@ -292,6 +292,7 @@ GameObject:
   - component: {fileID: 3303995229342909441}
   - component: {fileID: 7211896445419715663}
   - component: {fileID: 7762562703106253832}
+  - component: {fileID: 6145465582914307630}
   m_Layer: 5
   m_Name: IntroTestButton
   m_TagString: Untagged
@@ -379,6 +380,27 @@ MonoBehaviour:
   targetPosition: {x: 0, y: 5, z: 0}
   moveDuration: 3
   moveEase: 4
+--- !u!114 &6145465582914307630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5323302623230398828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd613e6ebe1354e818858b076bf30736, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textFadeDuration: 3
+  textEase: 8
+  buttonDelayAfterText: 1
+  buttonScaleDuration: 2
+  buttonScaleEase: 27
+  targetText: {fileID: 7101527085458118441}
+  targetButton: {fileID: 6527115780408078068}
+  playOnStart: 1
+  initialDelay: 3
 --- !u!1 &6149490974927138030
 GameObject:
   m_ObjectHideFlags: 0
@@ -490,8 +512,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4291024864
+  m_fontColor: {r: 0.8773585, g: 0.8438368, b: 0.76561946, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -852,7 +874,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14f3a5bc4598e4582a78723e6e186eac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomData: {fileID: 11400000, guid: 77fd1f3b72e4d478c8c2eab599d811b8, type: 2}
+  roomData: {fileID: 11400000, guid: 46b6475a7b5164a01bbbabea438646ba, type: 2}
 --- !u!1 &8726476919170466594
 GameObject:
   m_ObjectHideFlags: 0
