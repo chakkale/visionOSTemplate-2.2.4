@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3901778574498000225}
   - component: {fileID: 3303995229342909441}
   - component: {fileID: 7211896445419715663}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: MapButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28,7 +28,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.075, y: 0.075, z: 0.075}
+  m_LocalScale: {x: 0.18683, y: 0.18683, z: 0.18683}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6215899378756525655}
@@ -67,7 +67,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Target: {fileID: 0}
-  m_TargetOffset: {x: 0, y: 0, z: 0.5}
+  m_TargetOffset: {x: 0, y: -0.4, z: 0.5}
   m_FollowInLocalSpace: 0
   m_ApplyTargetInLocalSpace: 0
   m_MovementSpeed: 4
@@ -188,7 +188,7 @@ GameObject:
   - component: {fileID: 6572297759827149782}
   - component: {fileID: 8666214270460382620}
   - component: {fileID: 2905926408320252475}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Element_10radius1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -478,9 +478,17 @@ PrefabInstance:
       propertyPath: m_InteractableSource
       value: 
       objectReference: {fileID: 6572297759827149782}
+    - target: {fileID: 4939428070044211892, guid: dea6c6d210c804a0f871c7ca5b07ece3, type: 3}
+      propertyPath: m_ActivateClickAnimationMode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8748107497183288326, guid: dea6c6d210c804a0f871c7ca5b07ece3, type: 3}
       propertyPath: m_Name
       value: ButtonAffordance
+      objectReference: {fileID: 0}
+    - target: {fileID: 8748107497183288326, guid: dea6c6d210c804a0f871c7ca5b07ece3, type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
