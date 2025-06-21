@@ -188,7 +188,7 @@ GameObject:
   - component: {fileID: 6572297759827149782}
   - component: {fileID: 8666214270460382620}
   m_Layer: 5
-  m_Name: Element_10radius1
+  m_Name: MapButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
