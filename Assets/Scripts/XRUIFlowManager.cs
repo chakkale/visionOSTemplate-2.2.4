@@ -22,7 +22,9 @@ public class XRUIFlowManager : MonoBehaviour
     [SerializeField] private float scaleAnimationDuration = 0.6f;
     [SerializeField] private Ease scaleUpEase = Ease.OutBack;
     [SerializeField] private Ease scaleDownEase = Ease.InBack;
+    #pragma warning disable CS0414 // Field is assigned but its value is never used
     [SerializeField] private float animationDelay = 0.1f;
+    #pragma warning restore CS0414 // Field is assigned but its value is never used
     
     [Header("Debug")]
     [SerializeField] private bool enableDebugLogs = true;

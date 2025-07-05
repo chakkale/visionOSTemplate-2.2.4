@@ -232,17 +232,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4113836866920382579, guid: 1a3e3747f58aa4bb0abb4f18efc66391, type: 3}
   m_PrefabInstance: {fileID: 571071029}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &94000255 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7762562703106253832, guid: 34e399c3e1975447cbb32f15bd45b3c2, type: 3}
-  m_PrefabInstance: {fileID: 1224923654}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f57248ada548844158411dbd50b786a7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &376078426
 GameObject:
   m_ObjectHideFlags: 0
@@ -1504,7 +1493,7 @@ AudioSource:
   m_PlayOnAwake: 1
   m_Volume: 0.5
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -2768,21 +2757,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2905926408320252475, guid: 34e399c3e1975447cbb32f15bd45b3c2, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3901778574498000225, guid: 34e399c3e1975447cbb32f15bd45b3c2, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.72
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3901778574498000225, guid: 34e399c3e1975447cbb32f15bd45b3c2, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.595
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3901778574498000225, guid: 34e399c3e1975447cbb32f15bd45b3c2, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3901778574498000225, guid: 34e399c3e1975447cbb32f15bd45b3c2, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2812,33 +2797,46 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4862477600998088008, guid: 34e399c3e1975447cbb32f15bd45b3c2, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 8167294311739590198, guid: fb7ff9ecc61174afc9eb235b3ed4c547, type: 3}
+    - target: {fileID: 5233910241598238246, guid: 34e399c3e1975447cbb32f15bd45b3c2, type: 3}
+      propertyPath: m_Color.b
+      value: 0.7028302
+      objectReference: {fileID: 0}
+    - target: {fileID: 5233910241598238246, guid: 34e399c3e1975447cbb32f15bd45b3c2, type: 3}
+      propertyPath: m_Color.g
+      value: 0.86017907
+      objectReference: {fileID: 0}
+    - target: {fileID: 5233910241598238246, guid: 34e399c3e1975447cbb32f15bd45b3c2, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5323302623230398828, guid: 34e399c3e1975447cbb32f15bd45b3c2, type: 3}
       propertyPath: m_Name
       value: IntroTestButton
       objectReference: {fileID: 0}
-    - target: {fileID: 6572297759827149782, guid: 34e399c3e1975447cbb32f15bd45b3c2, type: 3}
-      propertyPath: m_SelectEntered.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+    - target: {fileID: 5387119519711111856, guid: 34e399c3e1975447cbb32f15bd45b3c2, type: 3}
+      propertyPath: m_fontColor.b
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6572297759827149782, guid: 34e399c3e1975447cbb32f15bd45b3c2, type: 3}
-      propertyPath: m_SelectEntered.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 94000255}
-    - target: {fileID: 6572297759827149782, guid: 34e399c3e1975447cbb32f15bd45b3c2, type: 3}
-      propertyPath: m_SelectEntered.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: AnimateOutAndDestroy
+    - target: {fileID: 5387119519711111856, guid: 34e399c3e1975447cbb32f15bd45b3c2, type: 3}
+      propertyPath: m_fontColor.g
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6572297759827149782, guid: 34e399c3e1975447cbb32f15bd45b3c2, type: 3}
-      propertyPath: m_SelectEntered.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: AnimateAndDestroy, Assembly-CSharp
+    - target: {fileID: 5387119519711111856, guid: 34e399c3e1975447cbb32f15bd45b3c2, type: 3}
+      propertyPath: m_fontColor.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5387119519711111856, guid: 34e399c3e1975447cbb32f15bd45b3c2, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4278190080
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6149490974927138030, guid: 34e399c3e1975447cbb32f15bd45b3c2, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
     - targetCorrespondingSourceObject: {fileID: 5307883994776874508, guid: 34e399c3e1975447cbb32f15bd45b3c2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 0}
@@ -3132,6 +3130,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6527115780408078068, guid: 8e8777835ee554db4aef4533032ffe79, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3381,6 +3383,7 @@ GameObject:
   - component: {fileID: 1732320012}
   - component: {fileID: 1732320014}
   - component: {fileID: 1732320015}
+  - component: {fileID: 1732320016}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -3524,6 +3527,27 @@ MonoBehaviour:
   m_TrackingType: 0
   m_UpdateType: 0
   m_UseRelativeTransform: 0
+--- !u!114 &1732320016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1732320007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c8b5a1f2e3d4c5a6b7c8d9e0f1a2b3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mouseSensitivity: 70
+  smoothTime: 0.1
+  invertY: 0
+  minVerticalAngle: -90
+  maxVerticalAngle: 90
+  moveSpeed: 1
+  sprintMultiplier: 2
+  enableMovement: 0
+  showDebugInfo: 0
 --- !u!1 &1779652984
 GameObject:
   m_ObjectHideFlags: 0

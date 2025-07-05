@@ -52,7 +52,7 @@ PlayerSettings:
   m_SpriteBatchMaxVertexCount: 65535
   m_SpriteBatchVertexThreshold: 300
   m_MTRendering: 1
-  mipStripping: 0
+  mipStripping: 1
   numberOfMipsStripped: 0
   numberOfMipsStrippedPerMipmapLimitGroup: {}
   m_StackTraceTypes: 010000000100000001000000010000000100000001000000
@@ -138,21 +138,18 @@ PlayerSettings:
   vulkanEnableLateAcquireNextImage: 0
   vulkanEnableCommandBufferRecycling: 1
   loadStoreDebugModeEnabled: 0
-  visionOSBundleVersion: 1.0
+  visionOSBundleVersion: 0.7
   tvOSBundleVersion: 1.0
-  bundleVersion: 0.2
+  bundleVersion: 0.7
   preloadedAssets:
   - {fileID: 11400000, guid: bb65518a4a80049acbc5e85e70dbbee0, type: 2}
-  - {fileID: 11400000, guid: d1b44b12dbc12554c862e577406554bd, type: 2}
-  - {fileID: 11400000, guid: ac517bd71f33e472fa5c25448bc7a703, type: 2}
-  - {fileID: -374473393521292908, guid: 91384b14c79fa804d924648a4e81b07c, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
   xboxOneDisableKinectGpuReservation: 1
   xboxOneEnable7thCore: 1
   vrSettings:
-    enable360StereoCapture: 0
+    enable360StereoCapture: 1
   isWsaHolographicRemotingEnabled: 0
   enableFrameTimingStats: 0
   enableOpenGLProfilerGPURecorders: 1
@@ -167,11 +164,12 @@ PlayerSettings:
   androidMaxAspectRatio: 2.1
   androidMinAspectRatio: 1
   applicationIdentifier:
+    Standalone: com.Wizio.VisionPro-ArchvizTest
     VisionOS: com.Wizio.VisionPro-ArchvizTest
     iPhone: com.DefaultCompany.PolySpatial-Project-Template
   buildNumber:
     Standalone: 0
-    VisionOS: 0
+    VisionOS: 1
     iPhone: 0
     tvOS: 0
   overrideDefaultApplicationIdentifier: 0
@@ -250,7 +248,7 @@ PlayerSettings:
   iOSManualSigningProvisioningProfileType: 0
   tvOSManualSigningProvisioningProfileType: 0
   VisionOSManualSigningProvisioningProfileType: 0
-  appleEnableAutomaticSigning: 0
+  appleEnableAutomaticSigning: 1
   iOSRequireARKit: 0
   iOSAutomaticallyDetectAndAddCapabilities: 1
   appleEnableProMotion: 0
@@ -542,6 +540,8 @@ PlayerSettings:
   - m_BuildTarget: AndroidPlayer
     m_GraphicsJobs: 0
   - m_BuildTarget: WebGLSupport
+    m_GraphicsJobs: 0
+  - m_BuildTarget: VisionOSPlayer
     m_GraphicsJobs: 0
   m_BuildTargetGraphicsJobMode:
   - m_BuildTarget: PS4Player

@@ -23,6 +23,7 @@ public class TransparentGrabPassFeature : ScriptableRendererFeature
             this.source = source;
         }
 
+        [System.Obsolete]
         public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
         {
             var desc = renderingData.cameraData.cameraTargetDescriptor;
@@ -32,9 +33,10 @@ public class TransparentGrabPassFeature : ScriptableRendererFeature
                 desc.width /= downsample;
                 desc.height /= downsample;
             }
-            RenderingUtils.ReAllocateIfNeeded(ref tempTexture, desc, FilterMode.Bilinear, TextureWrapMode.Clamp, name: "_TempTransparentGrabTexture");
+            RenderingUtils.ReAllocateHandleIfNeeded(ref tempTexture, desc, FilterMode.Bilinear, TextureWrapMode.Clamp, name: "_TempTransparentGrabTexture");
         }
 
+        [System.Obsolete]
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             CommandBuffer cmd = CommandBufferPool.Get(profilerTag);
@@ -78,7 +80,9 @@ public class TransparentGrabPassFeature : ScriptableRendererFeature
 
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
     {
+        #pragma warning disable CS0618 // Type or member is obsolete
         grabPass.Setup(renderer.cameraColorTargetHandle);
+        #pragma warning restore CS0618 // Type or member is obsolete
         renderer.EnqueuePass(grabPass);
     }
 } 

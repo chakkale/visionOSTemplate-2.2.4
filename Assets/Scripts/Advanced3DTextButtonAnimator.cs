@@ -5,25 +5,24 @@ using System.Collections;
 
 public class Advanced3DTextButtonAnimator : MonoBehaviour
 {
-    [Header("Text Animation Settings")]
-    [SerializeField] private float textFadeDuration = 1.0f;
-    [SerializeField] private Ease textEase = Ease.OutQuart;
+    [Header("Sprite Animation Settings")]
+    [SerializeField] private float spriteFadeDuration = 1.0f;
+    [SerializeField] private Ease spriteEase = Ease.OutQuart;
     
     [Header("Button Animation Settings")]
-    [SerializeField] private float buttonDelayAfterText = 0.3f;
+    [SerializeField] private float buttonDelayAfterSprite = 0.3f;
     [SerializeField] private float buttonScaleDuration = 0.8f;
     [SerializeField] private Ease buttonScaleEase = Ease.OutBack;
     
     [Header("Components")]
-    [SerializeField] private TextMeshPro targetText;
+    [SerializeField] private SpriteRenderer targetSprite;
     [SerializeField] private GameObject targetButton;
     
     [Header("Auto Settings")]
     [SerializeField] private bool playOnStart = true;
     [SerializeField] private float initialDelay = 0f;
     
-    private string originalText;
-    private Color originalTextColor;
+    private Color originalSpriteColor;
     private Vector3 originalButtonScale;
     private bool isAnimating = false;
     
@@ -50,16 +49,16 @@ public class Advanced3DTextButtonAnimator : MonoBehaviour
     private void SetupComponents()
     {
         // Auto-find components
-        if (targetText == null)
-            targetText = GetComponentInChildren<TextMeshPro>();
+        if (targetSprite == null)
+            targetSprite = GetComponentInChildren<SpriteRenderer>();
             
         if (targetButton == null)
         {
-            // Look for any child with a renderer that's not the text
+            // Look for any child with a renderer that's not the sprite
             Renderer[] renderers = GetComponentsInChildren<Renderer>();
             foreach (var renderer in renderers)
             {
-                if (renderer.gameObject != targetText?.gameObject)
+                if (renderer.gameObject != targetSprite?.gameObject)
                 {
                     targetButton = renderer.gameObject;
                     break;
@@ -70,10 +69,9 @@ public class Advanced3DTextButtonAnimator : MonoBehaviour
     
     private void StoreOriginalValues()
     {
-        if (targetText != null)
+        if (targetSprite != null)
         {
-            originalText = targetText.text;
-            originalTextColor = targetText.color;
+            originalSpriteColor = targetSprite.color;
         }
         
         if (targetButton != null)
@@ -105,13 +103,12 @@ public class Advanced3DTextButtonAnimator : MonoBehaviour
     {
         StopAnimation();
         
-        // Reset text
-        if (targetText != null)
+        // Reset sprite
+        if (targetSprite != null)
         {
-            targetText.text = "";
-            Color transparentColor = originalTextColor;
+            Color transparentColor = originalSpriteColor;
             transparentColor.a = 0f;
-            targetText.color = transparentColor;
+            targetSprite.color = transparentColor;
         }
         
         // Reset button
@@ -126,14 +123,14 @@ public class Advanced3DTextButtonAnimator : MonoBehaviour
         isAnimating = true;
         ResetToInitialState();
         
-        // Phase 1: Text Animation
-        if (targetText != null && !string.IsNullOrEmpty(originalText))
+        // Phase 1: Sprite Animation
+        if (targetSprite != null)
         {
-            yield return StartCoroutine(AnimateTextFadeIn());
+            yield return StartCoroutine(AnimateSpriteFadeIn());
         }
         
         // Phase 2: Button Animation
-        yield return new WaitForSeconds(buttonDelayAfterText);
+        yield return new WaitForSeconds(buttonDelayAfterSprite);
         
         if (targetButton != null)
         {
@@ -143,20 +140,19 @@ public class Advanced3DTextButtonAnimator : MonoBehaviour
         isAnimating = false;
     }
     
-    private IEnumerator AnimateTextFadeIn()
+    private IEnumerator AnimateSpriteFadeIn()
     {
-        // Set the text content and start with transparent color
-        targetText.text = originalText;
-        Color transparentColor = originalTextColor;
+        // Start with transparent color
+        Color transparentColor = originalSpriteColor;
         transparentColor.a = 0f;
-        targetText.color = transparentColor;
+        targetSprite.color = transparentColor;
         
-        // Fade in the whole text smoothly
-        targetText.DOColor(originalTextColor, textFadeDuration)
-            .SetEase(textEase);
+        // Fade in the sprite smoothly
+        targetSprite.DOColor(originalSpriteColor, spriteFadeDuration)
+            .SetEase(spriteEase);
         
         // Wait for the fade to complete
-        yield return new WaitForSeconds(textFadeDuration);
+        yield return new WaitForSeconds(spriteFadeDuration);
     }
     
     private void AnimateButtonScale()
@@ -178,16 +174,24 @@ public class Advanced3DTextButtonAnimator : MonoBehaviour
     }
     
     // Public API methods
-    public void SetText(string newText)
+    public void SetSprite(Sprite newSprite)
     {
-        originalText = newText;
-        if (!isAnimating && targetText != null)
-            targetText.text = newText;
+        if (targetSprite != null)
+        {
+            targetSprite.sprite = newSprite;
+        }
+    }
+    
+    public void SetSpriteColor(Color newColor)
+    {
+        originalSpriteColor = newColor;
+        if (!isAnimating && targetSprite != null)
+            targetSprite.color = newColor;
     }
     
     public void SetAnimationSpeed(float speedMultiplier)
     {
-        textFadeDuration /= speedMultiplier;
+        spriteFadeDuration /= speedMultiplier;
         buttonScaleDuration /= speedMultiplier;
     }
     
