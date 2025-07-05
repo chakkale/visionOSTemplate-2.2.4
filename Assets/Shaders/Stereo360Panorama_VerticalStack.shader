@@ -5,6 +5,7 @@ Shader "Stereoscopic/Stereo360Panorama_VerticalStack"
 		[Toggle] _LeftEyeOnTop("Left Eye On Top", Float) = 1
 		[Toggle] _RespectObjectRotation("Respect Object Rotation", Float) = 1
 		[Toggle] _DebugMode("Debug Mode (Show UV)", Float) = 1
+		[Toggle] _ShowEyeOverlay("Show Eye Color Overlay", Float) = 0
 		[Range(0,1)] _Opacity("Opacity", Range(0,1)) = 1
 	}
 	SubShader{
@@ -25,6 +26,7 @@ Shader "Stereoscopic/Stereo360Panorama_VerticalStack"
 			float _LeftEyeOnTop;
 			float _RespectObjectRotation;
 			float _DebugMode;
+			float _ShowEyeOverlay;
 			float _Opacity;
 			
 			struct appdata {
@@ -120,6 +122,17 @@ Shader "Stereoscopic/Stereo360Panorama_VerticalStack"
 				
 				// Sample the texture with edge fix
 				fixed4 col = SamplePanoramaWithEdgeFix(_MainTex, uv);
+				
+				// Eye overlay debug mode
+				if (_ShowEyeOverlay > 0.5) {
+					// Apply colored overlay to differentiate eyes
+					float3 eyeOverlay = eyeIndex == 0 ? 
+						float3(0.3, 0.0, 0.0) :  // Left eye: red tint
+						float3(0.0, 0.0, 0.3);   // Right eye: blue tint
+					
+					col.rgb += eyeOverlay;
+				}
+				
 				col.a *= _Opacity;
 				return col;
 			}

@@ -78,6 +78,7 @@ Material:
     - _Opacity: 1
     - _Parallax: 0.02
     - _RespectObjectRotation: 1
+    - _ShowEyeOverlay: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
