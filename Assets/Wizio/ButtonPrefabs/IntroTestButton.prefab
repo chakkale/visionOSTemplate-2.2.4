@@ -479,15 +479,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd613e6ebe1354e818858b076bf30736, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteFadeDuration: 1
+  enableSkyboxExposureAnimation: 1
+  skyboxAnimationDuration: 2.5
+  skyboxEase: 12
+  delayAfterSkybox: 1
+  spriteFadeDuration: 3
   spriteEase: 12
-  buttonDelayAfterSprite: 0.3
+  spriteScaleStartMultiplier: 0.8
+  enableSpriteScaleAnimation: 1
+  buttonDelayAfterSprite: 0.2
   buttonScaleDuration: 2
   buttonScaleEase: 27
   targetSprite: {fileID: 5233910241598238246}
   targetButton: {fileID: 6527115780408078068}
   playOnStart: 1
-  initialDelay: 3
+  initialDelay: 2
 --- !u!1 &6149490974927138030
 GameObject:
   m_ObjectHideFlags: 0
@@ -961,7 +967,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14f3a5bc4598e4582a78723e6e186eac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomData: {fileID: 11400000, guid: 46b6475a7b5164a01bbbabea438646ba, type: 2}
+  roomData: {fileID: 11400000, guid: 2526bab77f575434c8c02f6c3c0c220a, type: 2}
 --- !u!1 &8726476919170466594
 GameObject:
   m_ObjectHideFlags: 0

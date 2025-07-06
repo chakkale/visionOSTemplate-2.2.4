@@ -16,6 +16,9 @@ public class RoomManager : MonoBehaviour
     private GameObject nextRoomPrefab;
     private MeshRenderer nextSphereRenderer;
     private bool isFading = false;
+    private RoomData currentRoomData; // Track the current room data
+    
+    public RoomData CurrentRoomData => currentRoomData; // Public property to access current room data
 
     private void Awake()
     {
@@ -105,6 +108,14 @@ public class RoomManager : MonoBehaviour
         currentSphereRenderer = nextSphereRenderer;
         nextRoomPrefab = null;
         nextSphereRenderer = null;
+        
+        // Store the current room data
+        currentRoomData = roomData;
+        Debug.Log($"[RoomManager] Successfully switched to room: {roomData.roomName}");
+        
+        // Notify UI to update room info
+        NotifyRoomChanged();
+        
         isFading = false;
 
         // Update HDRISkyController's skyboxSphere reference if present
@@ -192,5 +203,16 @@ public class RoomManager : MonoBehaviour
                 return mr.transform;
         }
         return null;
+    }
+    
+    // Notify UI components that the room has changed
+    private void NotifyRoomChanged()
+    {
+        // Find XRUIFlowManager and update room info
+        XRUIFlowManager uiManager = Object.FindFirstObjectByType<XRUIFlowManager>();
+        if (uiManager != null)
+        {
+            uiManager.OnRoomChanged();
+        }
     }
 } 

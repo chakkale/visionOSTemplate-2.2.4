@@ -124,6 +124,22 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5802588317130569247, guid: 1a3e3747f58aa4bb0abb4f18efc66391, type: 3}
   m_PrefabInstance: {fileID: 571071029}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &85265584 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 749309897235291883, guid: 8e8777835ee554db4aef4533032ffe79, type: 3}
+  m_PrefabInstance: {fileID: 1503331895}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9541d86e2fd84c1d9990edf0852d74ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!212 &186850350 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 2403916172336245892, guid: 8e8777835ee554db4aef4533032ffe79, type: 3}
+  m_PrefabInstance: {fileID: 1503331895}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &376078426
 GameObject:
   m_ObjectHideFlags: 0
@@ -1084,14 +1100,31 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7211896445419715663, guid: 1a3e3747f58aa4bb0abb4f18efc66391, type: 3}
-      propertyPath: m_TargetOffset.z
-      value: 1.2
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8692552508709072280, guid: 1a3e3747f58aa4bb0abb4f18efc66391, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
+    - targetCorrespondingSourceObject: {fileID: 4505712810210078550, guid: 1a3e3747f58aa4bb0abb4f18efc66391, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
+    - targetCorrespondingSourceObject: {fileID: 2448758467335361288, guid: 1a3e3747f58aa4bb0abb4f18efc66391, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
+    - targetCorrespondingSourceObject: {fileID: 4628351125344480460, guid: 1a3e3747f58aa4bb0abb4f18efc66391, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
+    - targetCorrespondingSourceObject: {fileID: 590816834601769549, guid: 1a3e3747f58aa4bb0abb4f18efc66391, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
+    - targetCorrespondingSourceObject: {fileID: 3198296622037449820, guid: 1a3e3747f58aa4bb0abb4f18efc66391, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
+    - targetCorrespondingSourceObject: {fileID: 5538072536343817887, guid: 1a3e3747f58aa4bb0abb4f18efc66391, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: 1a3e3747f58aa4bb0abb4f18efc66391, type: 3}
 --- !u!1 &662741293
 GameObject:
@@ -1139,6 +1172,17 @@ MonoBehaviour:
   - {fileID: 801582711}
   - {fileID: 944814522}
   mapInfoText: {fileID: 1134257083}
+  roomInfoText: {fileID: 85265584}
+  iconLight: {fileID: 186850350}
+  iconDark: {fileID: 686576800}
+  buttonMeshRenderer: {fileID: 917486866}
+  toggleFadeDuration: 0.35
+  toggleFadeEase: 7
+  colorTransitionDuration: 0.5
+  colorTransitionEase: 7
+  syncColorTransitionWithSprites: 1
+  lightModeColor: {r: 0.8352941, g: 0.78431374, b: 0.73333335, a: 0.48235294}
+  darkModeColor: {r: 0.1764706, g: 0.1764706, b: 0.1764706, a: 0.48235294}
   startInteractable: {fileID: 1140986486}
   mapInteractable: {fileID: 1921975965}
   dayNightInteractable: {fileID: 917486867}
@@ -1148,6 +1192,7 @@ MonoBehaviour:
   scaleDownEase: 26
   animationDelay: 0.05
   enableDebugLogs: 1
+  autoRemoveBaseMapTexture: 1
 --- !u!4 &662741295
 Transform:
   m_ObjectHideFlags: 0
@@ -1163,6 +1208,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &686576800 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 9198812136013464621, guid: 8e8777835ee554db4aef4533032ffe79, type: 3}
+  m_PrefabInstance: {fileID: 1503331895}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &801582711 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 974221233617765970, guid: 1a3e3747f58aa4bb0abb4f18efc66391, type: 3}
@@ -1399,6 +1449,11 @@ Transform:
 --- !u!1 &917486864 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5145048622419893129, guid: 8e8777835ee554db4aef4533032ffe79, type: 3}
+  m_PrefabInstance: {fileID: 1503331895}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &917486866 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3183355296341354643, guid: 8e8777835ee554db4aef4533032ffe79, type: 3}
   m_PrefabInstance: {fileID: 1503331895}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &917486867 stripped
@@ -2050,10 +2105,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: IntroTestButton
       objectReference: {fileID: 0}
-    - target: {fileID: 5323302623230398828, guid: 34e399c3e1975447cbb32f15bd45b3c2, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2348,10 +2399,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4094392331651398513, guid: 8e8777835ee554db4aef4533032ffe79, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 1042472422017803267, guid: dbd6969884e41403bb58b910a8289930, type: 2}
     - target: {fileID: 5323302623230398828, guid: 8e8777835ee554db4aef4533032ffe79, type: 3}
       propertyPath: m_Name
       value: MainMenu
@@ -2360,17 +2407,13 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6527115780408078068, guid: 8e8777835ee554db4aef4533032ffe79, type: 3}
-      propertyPath: m_IsActive
-      value: 1
+    - target: {fileID: 9091927015359921241, guid: 8e8777835ee554db4aef4533032ffe79, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.0015
       objectReference: {fileID: 0}
-    - target: {fileID: 7211896445419715663, guid: 8e8777835ee554db4aef4533032ffe79, type: 3}
-      propertyPath: m_MaxAngleAllowed
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 8643461215147263140, guid: 8e8777835ee554db4aef4533032ffe79, type: 3}
-      propertyPath: m_Mesh
-      value: 
+    - target: {fileID: 9091927015359921241, guid: 8e8777835ee554db4aef4533032ffe79, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.0223
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -5,6 +5,12 @@ using System.Collections;
 
 public class Advanced3DTextButtonAnimator : MonoBehaviour
 {
+    [Header("Skybox Animation Settings")]
+    [SerializeField] private bool enableSkyboxExposureAnimation = true;
+    [SerializeField] private float skyboxAnimationDuration = 1.2f;
+    [SerializeField] private Ease skyboxEase = Ease.OutQuart;
+    [SerializeField] private float delayAfterSkybox = 1.0f; // Delay between skybox and sprite animations
+    
     [Header("Sprite Animation Settings")]
     [SerializeField] private float spriteFadeDuration = 1.0f;
     [SerializeField] private Ease spriteEase = Ease.OutQuart;
@@ -30,6 +36,8 @@ public class Advanced3DTextButtonAnimator : MonoBehaviour
     private bool isAnimating = false;
     private Material spriteMaterial;
     private float originalMaterialAlpha;
+    private Material skyboxMaterial;
+    private float originalSkyboxExposure;
     
     private void Awake()
     {
@@ -103,6 +111,32 @@ public class Advanced3DTextButtonAnimator : MonoBehaviour
         {
             originalButtonScale = targetButton.transform.localScale;
         }
+        
+        // Store skybox material and exposure
+        if (enableSkyboxExposureAnimation)
+        {
+            skyboxMaterial = RenderSettings.skybox;
+            if (skyboxMaterial != null)
+            {
+                // Check for common exposure property names
+                if (skyboxMaterial.HasProperty("_Exposure"))
+                {
+                    originalSkyboxExposure = skyboxMaterial.GetFloat("_Exposure");
+                }
+                else if (skyboxMaterial.HasProperty("_SunIntensity"))
+                {
+                    originalSkyboxExposure = skyboxMaterial.GetFloat("_SunIntensity");
+                }
+                else if (skyboxMaterial.HasProperty("_AtmosphereThickness"))
+                {
+                    originalSkyboxExposure = skyboxMaterial.GetFloat("_AtmosphereThickness");
+                }
+                else
+                {
+                    originalSkyboxExposure = 1.0f; // Default value
+                }
+            }
+        }
     }
     
     [ContextMenu("Play Animation")]
@@ -127,6 +161,12 @@ public class Advanced3DTextButtonAnimator : MonoBehaviour
     public void ResetToInitialState()
     {
         StopAnimation();
+        
+        // Reset skybox exposure to 0
+        if (enableSkyboxExposureAnimation && skyboxMaterial != null)
+        {
+            SetSkyboxExposure(0f);
+        }
         
         // Reset sprite
         if (targetSprite != null)
@@ -162,18 +202,37 @@ public class Advanced3DTextButtonAnimator : MonoBehaviour
         }
     }
     
+    [ContextMenu("Test Skybox Animation")]
+    public void TestSkyboxAnimation()
+    {
+        if (enableSkyboxExposureAnimation && skyboxMaterial != null)
+        {
+            SetSkyboxExposure(0f);
+            AnimateSkyboxExposure();
+        }
+    }
+    
     private IEnumerator ExecuteAnimationSequence()
     {
         isAnimating = true;
         ResetToInitialState();
         
-        // Phase 1: Sprite Animation
+        // Phase 1: Skybox Exposure Animation (starts first)
+        if (enableSkyboxExposureAnimation && skyboxMaterial != null)
+        {
+            AnimateSkyboxExposure();
+            
+            // Wait for specified delay after skybox animation starts
+            yield return new WaitForSeconds(delayAfterSkybox);
+        }
+        
+        // Phase 2: Sprite Animation (starts after skybox delay)
         if (targetSprite != null)
         {
             yield return StartCoroutine(AnimateSpriteFadeIn());
         }
         
-        // Phase 2: Button Animation
+        // Phase 3: Button Animation
         yield return new WaitForSeconds(buttonDelayAfterSprite);
         
         if (targetButton != null)
@@ -233,6 +292,16 @@ public class Advanced3DTextButtonAnimator : MonoBehaviour
             .SetTarget(this);
     }
     
+    private void AnimateSkyboxExposure()
+    {
+        if (skyboxMaterial == null) return;
+        
+        // Animate skybox exposure from 0 to original value
+        DOVirtual.Float(0f, originalSkyboxExposure, skyboxAnimationDuration, SetSkyboxExposure)
+            .SetEase(skyboxEase)
+            .SetTarget(this);
+    }
+    
     private void SetMaterialAlpha(float alpha)
     {
         if (spriteMaterial == null) return;
@@ -259,6 +328,25 @@ public class Advanced3DTextButtonAnimator : MonoBehaviour
         else if (spriteMaterial.HasProperty("_Alpha"))
         {
             spriteMaterial.SetFloat("_Alpha", alpha);
+        }
+    }
+    
+    private void SetSkyboxExposure(float exposure)
+    {
+        if (skyboxMaterial == null) return;
+        
+        // Try different skybox exposure property names
+        if (skyboxMaterial.HasProperty("_Exposure"))
+        {
+            skyboxMaterial.SetFloat("_Exposure", exposure);
+        }
+        else if (skyboxMaterial.HasProperty("_SunIntensity"))
+        {
+            skyboxMaterial.SetFloat("_SunIntensity", exposure);
+        }
+        else if (skyboxMaterial.HasProperty("_AtmosphereThickness"))
+        {
+            skyboxMaterial.SetFloat("_AtmosphereThickness", exposure);
         }
     }
     
@@ -318,5 +406,13 @@ public class Advanced3DTextButtonAnimator : MonoBehaviour
     {
         enableSpriteScaleAnimation = enabled;
         spriteScaleStartMultiplier = startMultiplier;
+    }
+    
+    public void SetSkyboxExposureAnimation(bool enabled, float duration = 1.2f, Ease ease = Ease.OutQuart, float delayBeforeSprite = 1.0f)
+    {
+        enableSkyboxExposureAnimation = enabled;
+        skyboxAnimationDuration = duration;
+        skyboxEase = ease;
+        delayAfterSkybox = delayBeforeSprite;
     }
 } 
