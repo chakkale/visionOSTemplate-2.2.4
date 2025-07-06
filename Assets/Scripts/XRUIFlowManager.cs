@@ -38,6 +38,9 @@ public class XRUIFlowManager : MonoBehaviour
     [SerializeField] private Color lightModeColor = new Color(213f/255f, 200f/255f, 187f/255f, 123f/255f); // #D5C8BB with alpha 123
     [SerializeField] private Color darkModeColor = new Color(45f/255f, 45f/255f, 45f/255f, 123f/255f); // #2D2D2D with alpha 123
     
+    [Header("Map Button Text Colors")]
+    [SerializeField] private Color activeMapButtonTextColor = Color.black; // Text color when button is active
+    
     [Header("XR Interactables")]
     [SerializeField] private XRSimpleInteractable startInteractable; // In IntroTestButton
     [SerializeField] private XRSimpleInteractable mapInteractable; // In MapButton
@@ -82,6 +85,10 @@ public class XRUIFlowManager : MonoBehaviour
     private Material buttonMeshMaterial;
     private Color originalIconLightColor;
     private Color originalIconDarkColor;
+    
+    // Map button text color management
+    private TMP_Text[] mapButtonTexts = new TMP_Text[6]; // Text components for each map button
+    private Color[] originalMapButtonTextColors = new Color[6]; // Original text colors for each map button
     
     // Button active states
     private GameObject[] mainMenuButtons; // Array of main menu buttons for easy management
@@ -363,6 +370,74 @@ public class XRUIFlowManager : MonoBehaviour
             if (maps[i] != null)
                 roomMapOriginalScales[i] = maps[i].transform.localScale;
         }
+        
+        // Find and store map button text components and their original colors
+        FindMapButtonTexts();
+    }
+    
+    private void FindMapButtonTexts()
+    {
+        if (mapList == null) 
+        {
+            if (enableDebugLogs) Debug.LogError("[XRUIFlowManager] MapList is null - cannot find map button texts!");
+            return;
+        }
+        
+        if (enableDebugLogs) Debug.Log("[XRUIFlowManager] Finding map button text components...");
+        
+        for (int i = 0; i < 6; i++)
+        {
+            string mapButtonName = $"Map{i + 1}Button";
+            Transform buttonTransform = FindChildRecursive(mapList.transform, mapButtonName);
+            
+            if (buttonTransform != null)
+            {
+                // Find the Text component under the button
+                TMP_Text textComponent = buttonTransform.GetComponentInChildren<TMP_Text>();
+                if (textComponent != null)
+                {
+                    mapButtonTexts[i] = textComponent;
+                    originalMapButtonTextColors[i] = textComponent.color;
+                    if (enableDebugLogs) Debug.Log($"[XRUIFlowManager] Found text for {mapButtonName}: original color R={textComponent.color.r:F2} G={textComponent.color.g:F2} B={textComponent.color.b:F2} A={textComponent.color.a:F2}");
+                }
+                else
+                {
+                    if (enableDebugLogs) Debug.LogWarning($"[XRUIFlowManager] No TMP_Text component found for {mapButtonName}!");
+                }
+            }
+            else
+            {
+                if (enableDebugLogs) Debug.LogWarning($"[XRUIFlowManager] {mapButtonName} not found in mapList!");
+            }
+        }
+        
+        if (enableDebugLogs) Debug.Log("[XRUIFlowManager] Map button text components initialization complete");
+    }
+    
+    private void SetMapButtonTextColor(int mapIndex, bool active)
+    {
+        if (mapIndex < 0 || mapIndex >= mapButtonTexts.Length) return;
+        if (mapButtonTexts[mapIndex] == null) return;
+        
+        Color targetColor = active ? activeMapButtonTextColor : originalMapButtonTextColors[mapIndex];
+        mapButtonTexts[mapIndex].color = targetColor;
+        
+        if (enableDebugLogs)
+        {
+            string mapName = GetMapName(mapIndex);
+            string state = active ? "ACTIVE (black)" : "INACTIVE (original)";
+            Debug.Log($"[XRUIFlowManager] Set {mapName} text color to {state}: R={targetColor.r:F2} G={targetColor.g:F2} B={targetColor.b:F2} A={targetColor.a:F2}");
+        }
+    }
+    
+    private void ResetAllMapButtonTextColors()
+    {
+        for (int i = 0; i < mapButtonTexts.Length; i++)
+        {
+            SetMapButtonTextColor(i, false); // Reset to original color
+        }
+        
+        if (enableDebugLogs) Debug.Log("[XRUIFlowManager] All map button text colors reset to original");
     }
     
     private void SetupXRListeners()
@@ -961,6 +1036,9 @@ public class XRUIFlowManager : MonoBehaviour
         
         string mapButtonName = $"Map{mapIndex + 1}Button";
         
+        // Set text color for the button (active = black, inactive = original)
+        SetMapButtonTextColor(mapIndex, active);
+        
         // Try to use cached affordance provider first
         if (mapButtonAffordanceProviders.TryGetValue(mapIndex, out XRInteractableAffordanceStateProvider affordanceProvider) && affordanceProvider != null)
         {
@@ -1451,9 +1529,12 @@ public class XRUIFlowManager : MonoBehaviour
             SetMapButtonActiveState(i, false);
         }
         
+        // Reset all map button text colors to original
+        ResetAllMapButtonTextColors();
+        
         activeMapIndex = -1;
         
-        if (enableDebugLogs) Debug.Log("[XRUIFlowManager] All button active states reset");
+        if (enableDebugLogs) Debug.Log("[XRUIFlowManager] All button active states and text colors reset");
     }
     
     private void RestoreAllButtonStates()
@@ -1956,6 +2037,60 @@ public class XRUIFlowManager : MonoBehaviour
         Debug.Log($"lightModeColor: R={lightModeColor.r:F2} G={lightModeColor.g:F2} B={lightModeColor.b:F2} A={lightModeColor.a:F2}");
         Debug.Log($"darkModeColor: R={darkModeColor.r:F2} G={darkModeColor.g:F2} B={darkModeColor.b:F2} A={darkModeColor.a:F2}");
         Debug.Log($"[XRUIFlowManager] === END SPRITE DEBUG ===");
+    }
+    
+    [ContextMenu("Debug Map Button Text Colors")]
+    public void DebugMapButtonTextColors()
+    {
+        Debug.Log($"[XRUIFlowManager] === MAP BUTTON TEXT COLORS DEBUG ===");
+        Debug.Log($"Active text color: R={activeMapButtonTextColor.r:F2} G={activeMapButtonTextColor.g:F2} B={activeMapButtonTextColor.b:F2} A={activeMapButtonTextColor.a:F2}");
+        
+        for (int i = 0; i < mapButtonTexts.Length; i++)
+        {
+            if (mapButtonTexts[i] != null)
+            {
+                Color currentColor = mapButtonTexts[i].color;
+                Color originalColor = originalMapButtonTextColors[i];
+                string mapName = GetMapName(i);
+                
+                Debug.Log($"{mapName} text - Current: R={currentColor.r:F2} G={currentColor.g:F2} B={currentColor.b:F2} A={currentColor.a:F2}");
+                Debug.Log($"{mapName} text - Original: R={originalColor.r:F2} G={originalColor.g:F2} B={originalColor.b:F2} A={originalColor.a:F2}");
+                
+                bool isActive = Mathf.Approximately(currentColor.r, activeMapButtonTextColor.r) && 
+                               Mathf.Approximately(currentColor.g, activeMapButtonTextColor.g) && 
+                               Mathf.Approximately(currentColor.b, activeMapButtonTextColor.b) && 
+                               Mathf.Approximately(currentColor.a, activeMapButtonTextColor.a);
+                Debug.Log($"{mapName} text - Status: {(isActive ? "ACTIVE" : "INACTIVE")}");
+            }
+            else
+            {
+                Debug.Log($"Map{i + 1} text component is null!");
+            }
+        }
+        
+        Debug.Log($"Current active map index: {activeMapIndex}");
+        Debug.Log($"[XRUIFlowManager] === END MAP BUTTON TEXT COLORS DEBUG ===");
+    }
+    
+    [ContextMenu("Test Map Button Text Colors")]
+    public void TestMapButtonTextColors()
+    {
+        Debug.Log("[XRUIFlowManager] Testing map button text colors - setting Patio to active");
+        SetMapButtonTextColor(0, true); // Set Patio to active (black)
+        
+        StartCoroutine(TestMapButtonTextColorCoroutine());
+    }
+    
+    private System.Collections.IEnumerator TestMapButtonTextColorCoroutine()
+    {
+        yield return new WaitForSeconds(2f);
+        Debug.Log("[XRUIFlowManager] Setting 2ºA to active, Patio to inactive");
+        SetMapButtonTextColor(0, false); // Set Patio to inactive
+        SetMapButtonTextColor(3, true);  // Set 2ºA to active
+        
+        yield return new WaitForSeconds(2f);
+        Debug.Log("[XRUIFlowManager] Resetting all map button text colors");
+        ResetAllMapButtonTextColors();
     }
     
     // Public methods for external access
