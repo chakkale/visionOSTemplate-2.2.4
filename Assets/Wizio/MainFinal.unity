@@ -1103,28 +1103,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8692552508709072280, guid: 1a3e3747f58aa4bb0abb4f18efc66391, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
-    - targetCorrespondingSourceObject: {fileID: 4505712810210078550, guid: 1a3e3747f58aa4bb0abb4f18efc66391, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
-    - targetCorrespondingSourceObject: {fileID: 2448758467335361288, guid: 1a3e3747f58aa4bb0abb4f18efc66391, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
-    - targetCorrespondingSourceObject: {fileID: 4628351125344480460, guid: 1a3e3747f58aa4bb0abb4f18efc66391, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
-    - targetCorrespondingSourceObject: {fileID: 590816834601769549, guid: 1a3e3747f58aa4bb0abb4f18efc66391, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
-    - targetCorrespondingSourceObject: {fileID: 3198296622037449820, guid: 1a3e3747f58aa4bb0abb4f18efc66391, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
-    - targetCorrespondingSourceObject: {fileID: 5538072536343817887, guid: 1a3e3747f58aa4bb0abb4f18efc66391, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1a3e3747f58aa4bb0abb4f18efc66391, type: 3}
 --- !u!1 &662741293
 GameObject:
@@ -1194,6 +1173,7 @@ MonoBehaviour:
   animationDelay: 0.05
   enableDebugLogs: 1
   autoRemoveBaseMapTexture: 1
+  interactionDebounceTime: 0.3
 --- !u!4 &662741295
 Transform:
   m_ObjectHideFlags: 0
@@ -2407,14 +2387,6 @@ PrefabInstance:
     - target: {fileID: 5323302623230398828, guid: 8e8777835ee554db4aef4533032ffe79, type: 3}
       propertyPath: m_IsActive
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9091927015359921241, guid: 8e8777835ee554db4aef4533032ffe79, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -0.0015
-      objectReference: {fileID: 0}
-    - target: {fileID: 9091927015359921241, guid: 8e8777835ee554db4aef4533032ffe79, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -0.0223
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

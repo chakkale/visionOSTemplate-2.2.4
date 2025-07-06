@@ -59,6 +59,9 @@ public class XRUIFlowManager : MonoBehaviour
     [SerializeField] private bool enableDebugLogs = true;
     [SerializeField] private bool autoRemoveBaseMapTexture = true; // Automatically remove Base Map texture to allow color changes
     
+    [Header("Interaction Settings")]
+    [SerializeField] private float interactionDebounceTime = 0.3f; // Minimum time between interactions to prevent fast-clicking issues
+    
     private Vector3 mapButtonOriginalScale;
     private Vector3 dayNightButtonOriginalScale;
     private Vector3 currentMapInfoDisplayOriginalScale;
@@ -68,6 +71,7 @@ public class XRUIFlowManager : MonoBehaviour
     private Vector3 closeButtonOriginalScale;
     private Vector3[] roomMapOriginalScales = new Vector3[6];
     private bool isTransitioning = false;
+    private float lastInteractionTime = 0f;
     
     // Current UI state
     public enum UIState { Start, MainMenu, MapView }
@@ -126,7 +130,7 @@ public class XRUIFlowManager : MonoBehaviour
         // Find children within MainMenu container
         if (mainMenu != null)
         {
-            if (mapButton == null)
+        if (mapButton == null)
             {
                 Transform mapButtonTransform = FindChildRecursive(mainMenu.transform, "MapButton");
                 if (mapButtonTransform != null)
@@ -340,6 +344,74 @@ public class XRUIFlowManager : MonoBehaviour
         mainMenuButtons = new GameObject[] { mapButton, dayNightButton, currentMapInfoDisplay, activeRoomInfoDisplay };
         
         if (enableDebugLogs) Debug.Log($"[XRUIFlowManager] Setup main menu buttons array with {mainMenuButtons.Length} elements");
+    }
+    
+    private bool CanInteract(string interactionSource = "")
+    {
+        float currentTime = Time.time;
+        
+        // For room selections, use lighter debouncing to prevent fast switching issues
+        float effectiveDebounceTime = interactionSource.Contains("Room") ? 0.1f : interactionDebounceTime;
+        
+        bool canInteract = (currentTime - lastInteractionTime) >= effectiveDebounceTime;
+        
+        if (!canInteract && enableDebugLogs)
+        {
+            Debug.Log($"[XRUIFlowManager] {interactionSource} interaction blocked - debounce (last: {lastInteractionTime:F2}, current: {currentTime:F2}, diff: {currentTime - lastInteractionTime:F2}, required: {effectiveDebounceTime:F2})");
+        }
+        
+        return canInteract;
+    }
+    
+    private void RegisterInteraction(string interactionSource = "")
+    {
+        lastInteractionTime = Time.time;
+        if (enableDebugLogs) Debug.Log($"[XRUIFlowManager] {interactionSource} interaction registered at time {lastInteractionTime:F2}");
+    }
+    
+    private void StartTransition(string transitionName = "")
+    {
+        if (isTransitioning && enableDebugLogs)
+        {
+            Debug.LogWarning($"[XRUIFlowManager] Starting transition '{transitionName}' but already transitioning!");
+        }
+        
+        isTransitioning = true;
+        if (enableDebugLogs) Debug.Log($"[XRUIFlowManager] Started transition: {transitionName}");
+    }
+    
+    private void EndTransition(string transitionName = "")
+    {
+        isTransitioning = false;
+        if (enableDebugLogs) Debug.Log($"[XRUIFlowManager] Ended transition: {transitionName}");
+    }
+    
+    private void KillSpecificAnimations(string context = "")
+    {
+        if (enableDebugLogs) Debug.Log($"[XRUIFlowManager] Killing animations - context: {context}");
+        
+        // Kill main menu button animations
+        if (mainMenuButtons != null)
+        {
+            foreach (var button in mainMenuButtons)
+            {
+                if (button != null) DOTween.Kill(button.transform);
+            }
+        }
+        
+        // Kill map main animations
+        if (mapMain != null) DOTween.Kill(mapMain.transform);
+        
+        // Kill room animations
+        for (int i = 0; i < maps.Length; i++)
+        {
+            if (maps[i] != null) DOTween.Kill(maps[i].transform);
+        }
+        
+        // Kill toggle animations
+        if (iconLightMaterial != null) DOTween.Kill(iconLightMaterial);
+        if (iconDarkMaterial != null) DOTween.Kill(iconDarkMaterial);
+        if (buttonMeshMaterial != null) DOTween.Kill(buttonMeshMaterial);
     }
     
     private void StoreOriginalValues()
@@ -569,8 +641,9 @@ public class XRUIFlowManager : MonoBehaviour
     
     private void OnStartSelected(UnityEngine.XR.Interaction.Toolkit.SelectEnterEventArgs args)
     {
-        if (isTransitioning) return;
+        if (!CanInteract("Start")) return;
         
+        RegisterInteraction("Start");
         if (enableDebugLogs) Debug.Log("[XRUIFlowManager] Start button selected - going to MainMenu");
         
         // Set Patio as default room for when user eventually goes to MapMain
@@ -580,8 +653,9 @@ public class XRUIFlowManager : MonoBehaviour
     
     private void OnMapSelected(UnityEngine.XR.Interaction.Toolkit.SelectEnterEventArgs args)
     {
-        if (isTransitioning) return;
+        if (!CanInteract("Map")) return;
         
+        RegisterInteraction("Map");
         if (enableDebugLogs) Debug.Log("[XRUIFlowManager] Map button selected - starting ShowMapView");
         
         SetButtonActiveState(mapButton, true);
@@ -590,8 +664,9 @@ public class XRUIFlowManager : MonoBehaviour
     
     private void OnDayNightSelected(UnityEngine.XR.Interaction.Toolkit.SelectEnterEventArgs args)
     {
-        if (isTransitioning || isTogglingMode) return;
+        if (!CanInteract("DayNight") || isTogglingMode) return;
         
+        RegisterInteraction("DayNight");
         if (enableDebugLogs) Debug.Log("[XRUIFlowManager] Dark/Light toggle button selected");
         
         ToggleDarkLightMode();
@@ -602,9 +677,9 @@ public class XRUIFlowManager : MonoBehaviour
     
     private void OnRoomSelected(int roomIndex)
     {
-        if (isTransitioning || roomIndex < 0 || roomIndex >= maps.Length) 
+        if (!CanInteract($"Room{roomIndex + 1}") || roomIndex < 0 || roomIndex >= maps.Length) 
         {
-            if (enableDebugLogs) Debug.Log($"[XRUIFlowManager] Room selection blocked - transitioning: {isTransitioning}, index: {roomIndex}");
+            if (enableDebugLogs) Debug.Log($"[XRUIFlowManager] Room selection blocked - index: {roomIndex}");
             return;
         }
         
@@ -614,9 +689,10 @@ public class XRUIFlowManager : MonoBehaviour
             return;
         }
         
+        RegisterInteraction($"Room{roomIndex + 1}");
         if (enableDebugLogs) Debug.Log($"[XRUIFlowManager] Room {roomIndex + 1} selected - changing from room {currentRoomIndex} to {roomIndex}");
         
-        isTransitioning = true;
+        StartTransition($"Room{roomIndex + 1}Selection");
         
         // Store the old room index before updating
         int oldRoomIndex = currentRoomIndex;
@@ -630,6 +706,12 @@ public class XRUIFlowManager : MonoBehaviour
         // Set active state for the selected map button (this will reset others and set this one active)
         SetMapButtonActiveState(roomIndex, true);
         
+        // Kill any existing room animations to prevent overlapping
+        for (int i = 0; i < maps.Length; i++)
+        {
+            if (maps[i] != null) DOTween.Kill(maps[i].transform);
+        }
+        
         // Hide old room and show selected room
         HideSpecificRoom(oldRoomIndex, () => {
             if (enableDebugLogs) Debug.Log($"[XRUIFlowManager] Old room {oldRoomIndex + 1} hidden, now showing room {roomIndex + 1}");
@@ -639,12 +721,9 @@ public class XRUIFlowManager : MonoBehaviour
     
     private void OnCloseSelected(UnityEngine.XR.Interaction.Toolkit.SelectEnterEventArgs args)
     {
-        if (isTransitioning) 
-        {
-            if (enableDebugLogs) Debug.Log("[XRUIFlowManager] Close button blocked - already transitioning");
-            return;
-        }
+        if (!CanInteract("Close")) return;
         
+        RegisterInteraction("Close");
         if (enableDebugLogs) Debug.Log("[XRUIFlowManager] Close button selected - closing map view");
         
         // Reset all button active states
@@ -655,9 +734,7 @@ public class XRUIFlowManager : MonoBehaviour
     
     private void ShowMainMenu()
     {
-        if (isTransitioning) return;
-        
-        isTransitioning = true;
+        StartTransition("ShowMainMenu");
         currentState = UIState.MainMenu;
         
         if (enableDebugLogs) Debug.Log("[XRUIFlowManager] Showing main menu");
@@ -667,19 +744,13 @@ public class XRUIFlowManager : MonoBehaviour
         
         // Show all main menu buttons with staggered animation
         ShowAllMainMenuButtons(() => {
-            isTransitioning = false;
+            EndTransition("ShowMainMenu");
         });
     }
     
     private void ShowMapView()
     {
-        if (isTransitioning) 
-        {
-            if (enableDebugLogs) Debug.Log("[XRUIFlowManager] ShowMapView blocked - already transitioning");
-            return;
-        }
-        
-        isTransitioning = true;
+        StartTransition("ShowMapView");
         currentState = UIState.MapView;
         
         if (enableDebugLogs) Debug.Log("[XRUIFlowManager] Showing map view - ensuring main menu is hidden first");
@@ -715,13 +786,7 @@ public class XRUIFlowManager : MonoBehaviour
     
     private void HideMapView()
     {
-        if (isTransitioning) 
-        {
-            if (enableDebugLogs) Debug.Log("[XRUIFlowManager] HideMapView blocked - already transitioning");
-            return;
-        }
-        
-        isTransitioning = true;
+        StartTransition("HideMapView");
         currentState = UIState.MainMenu;
         
         if (enableDebugLogs) Debug.Log("[XRUIFlowManager] Hiding map view - starting transition back to main menu");
@@ -730,7 +795,7 @@ public class XRUIFlowManager : MonoBehaviour
         HideMapMain(() => {
             if (enableDebugLogs) Debug.Log("[XRUIFlowManager] MapMain hidden - now showing main menu buttons");
             ShowAllMainMenuButtons(() => {
-                isTransitioning = false;
+                EndTransition("HideMapView");
                 if (enableDebugLogs) Debug.Log("[XRUIFlowManager] Main menu buttons shown - transition complete");
             });
         });
@@ -738,89 +803,95 @@ public class XRUIFlowManager : MonoBehaviour
     
     private void ShowAllMainMenuButtons(System.Action onComplete = null)
     {
-        int buttonsToShow = 0;
-        int buttonsShown = 0;
-        
+        // Kill any existing main menu animations
         foreach (var button in mainMenuButtons)
         {
-            if (button != null) buttonsToShow++;
+            if (button != null) DOTween.Kill(button.transform);
         }
         
-        if (buttonsToShow == 0)
+        var activeButtons = new List<GameObject>();
+        foreach (var button in mainMenuButtons)
+        {
+            if (button != null) activeButtons.Add(button);
+        }
+        
+        if (activeButtons.Count == 0)
         {
             onComplete?.Invoke();
             return;
         }
         
+        int buttonsCompleted = 0;
         System.Action checkComplete = () => {
-            buttonsShown++;
-            if (buttonsShown >= buttonsToShow)
+            buttonsCompleted++;
+            if (buttonsCompleted >= activeButtons.Count)
             {
                 onComplete?.Invoke();
             }
         };
         
-        for (int i = 0; i < mainMenuButtons.Length; i++)
+        for (int i = 0; i < activeButtons.Count; i++)
         {
-            if (mainMenuButtons[i] != null)
-            {
-                mainMenuButtons[i].SetActive(true);
-                mainMenuButtons[i].transform.localScale = Vector3.zero;
-                
-                // Stagger the animations
-                float delay = i * 0.1f;
-                mainMenuButtons[i].transform.DOScale(GetButtonOriginalScale(mainMenuButtons[i]), scaleAnimationDuration)
-                    .SetEase(scaleUpEase)
-                    .SetDelay(delay)
-                    .OnComplete(() => checkComplete());
-            }
+            var button = activeButtons[i];
+            button.SetActive(true);
+            button.transform.localScale = Vector3.zero;
+            
+            // Stagger the animations
+            float delay = i * 0.1f;
+            button.transform.DOScale(GetButtonOriginalScale(button), scaleAnimationDuration)
+                .SetEase(scaleUpEase)
+                .SetDelay(delay)
+                .SetId($"ShowMainMenuButton_{i}")
+                .OnComplete(() => checkComplete());
         }
     }
     
     private void HideAllMainMenuButtons(System.Action onComplete = null)
     {
-        int buttonsToHide = 0;
-        int buttonsHidden = 0;
-        
+        // Kill any existing main menu animations
         foreach (var button in mainMenuButtons)
         {
-            if (button != null && button.activeInHierarchy) buttonsToHide++;
+            if (button != null) DOTween.Kill(button.transform);
         }
         
-        if (buttonsToHide == 0)
+        var activeButtons = new List<GameObject>();
+        foreach (var button in mainMenuButtons)
+        {
+            if (button != null && button.activeInHierarchy) activeButtons.Add(button);
+        }
+        
+        if (activeButtons.Count == 0)
         {
             onComplete?.Invoke();
             return;
         }
         
+        int buttonsCompleted = 0;
         System.Action checkComplete = () => {
-            buttonsHidden++;
-            if (buttonsHidden >= buttonsToHide)
+            buttonsCompleted++;
+            if (buttonsCompleted >= activeButtons.Count)
             {
                 onComplete?.Invoke();
             }
         };
         
-        for (int i = 0; i < mainMenuButtons.Length; i++)
+        for (int i = 0; i < activeButtons.Count; i++)
         {
-            if (mainMenuButtons[i] != null && mainMenuButtons[i].activeInHierarchy)
-            {
-                // Capture the current value of i to avoid closure issues
-                int currentIndex = i;
-                
-                // Reverse stagger the animations
-                float delay = (mainMenuButtons.Length - i - 1) * 0.1f;
-                mainMenuButtons[i].transform.DOScale(Vector3.zero, scaleAnimationDuration)
-                    .SetEase(scaleDownEase)
-                    .SetDelay(delay)
-                    .OnComplete(() => {
-                        if (mainMenuButtons != null && currentIndex < mainMenuButtons.Length && mainMenuButtons[currentIndex] != null)
-                        {
-                            mainMenuButtons[currentIndex].SetActive(false);
-                        }
-                        checkComplete();
-                    });
-            }
+            var button = activeButtons[i];
+            
+            // Reverse stagger the animations
+            float delay = (activeButtons.Count - i - 1) * 0.1f;
+            button.transform.DOScale(Vector3.zero, scaleAnimationDuration)
+                .SetEase(scaleDownEase)
+                .SetDelay(delay)
+                .SetId($"HideMainMenuButton_{i}")
+                .OnComplete(() => {
+                    if (button != null)
+                    {
+                        button.SetActive(false);
+                    }
+                    checkComplete();
+                });
         }
     }
     
@@ -835,21 +906,22 @@ public class XRUIFlowManager : MonoBehaviour
         if (enableDebugLogs) Debug.Log("[XRUIFlowManager] ShowMapMain called - activating MapMain");
         
         // Activate MapMain and reset it to its prefab state
-        mapMain.SetActive(true);
+            mapMain.SetActive(true);
         
         // Reset all child components to their original prefab states
         ResetMapMainToPrefabState();
         
         // Start with scale zero for animation
-        mapMain.transform.localScale = Vector3.zero;
-        
+            mapMain.transform.localScale = Vector3.zero;
+            
         if (enableDebugLogs) Debug.Log("[XRUIFlowManager] Starting MapMain scale animation");
-        
+            
         // Animate MapMain scaling up
-        mapMain.transform.DOScale(mapMainOriginalScale, scaleAnimationDuration)
-            .SetEase(scaleUpEase)
+            mapMain.transform.DOScale(mapMainOriginalScale, scaleAnimationDuration)
+                .SetEase(scaleUpEase)
+            .SetId("ShowMapMain")
             .OnComplete(() => {
-                isTransitioning = false;
+                EndTransition("ShowMapMain");
                 // Ensure button states are correct after animation
                 RestoreAllButtonStates();
                 if (enableDebugLogs) Debug.Log("[XRUIFlowManager] MapMain animation complete - MapMain should be visible now");
@@ -920,6 +992,7 @@ public class XRUIFlowManager : MonoBehaviour
         
         mapMain.transform.DOScale(Vector3.zero, scaleAnimationDuration)
             .SetEase(scaleDownEase)
+            .SetId("HideMapMain")
             .OnComplete(() => {
                 mapMain.SetActive(false);
                 onComplete?.Invoke();
@@ -937,8 +1010,9 @@ public class XRUIFlowManager : MonoBehaviour
         
         maps[roomIndex].transform.DOScale(roomMapOriginalScales[roomIndex], scaleAnimationDuration)
             .SetEase(scaleUpEase)
+            .SetId($"ShowRoom_{roomIndex}")
             .OnComplete(() => {
-                isTransitioning = false;
+                EndTransition($"Room{roomIndex + 1}Selection");
                 if (enableDebugLogs) Debug.Log($"[XRUIFlowManager] Room {roomIndex + 1} shown");
             });
     }
@@ -956,6 +1030,7 @@ public class XRUIFlowManager : MonoBehaviour
             
             maps[roomIndex].transform.DOScale(Vector3.zero, scaleAnimationDuration)
                 .SetEase(scaleDownEase)
+                .SetId($"HideRoom_{roomIndex}")
                 .OnComplete(() => {
                     maps[roomIndex].SetActive(false);
                     if (enableDebugLogs) Debug.Log($"[XRUIFlowManager] Room {roomIndex + 1} ({GetMapName(roomIndex)}) hidden");
@@ -1123,7 +1198,7 @@ public class XRUIFlowManager : MonoBehaviour
                     }
                     
                     if (enableDebugLogs) Debug.Log($"[XRUIFlowManager] Set {mapButtonName} visual state to {(active ? "active" : "inactive")} using fallback material manipulation");
-                    return;
+            return;
                 }
             }
         }
@@ -1605,8 +1680,24 @@ public class XRUIFlowManager : MonoBehaviour
     
     private void OnDestroy()
     {
-        // Clean up DOTween sequences
-        DOTween.Kill(transform);
+        // Clean up DOTween animations more comprehensively
+        DOTween.Kill(this);
+        
+        // Kill specific object animations
+        if (mapMain != null) DOTween.Kill(mapMain.transform);
+        foreach (var button in mainMenuButtons)
+        {
+            if (button != null) DOTween.Kill(button.transform);
+        }
+        for (int i = 0; i < maps.Length; i++)
+        {
+            if (maps[i] != null) DOTween.Kill(maps[i].transform);
+        }
+        
+        // Kill material animations
+        if (iconLightMaterial != null) DOTween.Kill(iconLightMaterial);
+        if (iconDarkMaterial != null) DOTween.Kill(iconDarkMaterial);
+        if (buttonMeshMaterial != null) DOTween.Kill(buttonMeshMaterial);
         
         // Clean up material instances to prevent memory leaks
         if (iconLightMaterial != null)
@@ -2081,6 +2172,116 @@ public class XRUIFlowManager : MonoBehaviour
         StartCoroutine(TestMapButtonTextColorCoroutine());
     }
     
+    [ContextMenu("Test Fast Clicking Protection")]
+    public void TestFastClickingProtection()
+    {
+        Debug.Log("[XRUIFlowManager] Testing fast clicking protection - simulating rapid button presses");
+        StartCoroutine(TestFastClickingCoroutine());
+    }
+    
+    private System.Collections.IEnumerator TestFastClickingCoroutine()
+    {
+        Debug.Log("[XRUIFlowManager] Simulating 5 rapid button clicks within 1 second");
+        
+        for (int i = 0; i < 5; i++)
+        {
+            bool canInteract = CanInteract($"TestClick{i + 1}");
+            if (canInteract)
+            {
+                RegisterInteraction($"TestClick{i + 1}");
+                Debug.Log($"[XRUIFlowManager] Test click {i + 1} - ALLOWED");
+            }
+            else
+            {
+                Debug.Log($"[XRUIFlowManager] Test click {i + 1} - BLOCKED");
+            }
+            
+            yield return new WaitForSeconds(0.2f); // Click every 200ms
+        }
+        
+        Debug.Log("[XRUIFlowManager] Fast clicking test complete");
+    }
+    
+    [ContextMenu("Check Interaction Status")]
+    public void CheckInteractionStatus()
+    {
+        float currentTime = Time.time;
+        float timeSinceLastInteraction = currentTime - lastInteractionTime;
+        
+        Debug.Log($"[XRUIFlowManager] === INTERACTION STATUS ===");
+        Debug.Log($"[XRUIFlowManager] Is Transitioning: {isTransitioning}");
+        Debug.Log($"[XRUIFlowManager] Is Toggling Mode: {isTogglingMode}");
+        Debug.Log($"[XRUIFlowManager] Current Time: {currentTime:F2}");
+        Debug.Log($"[XRUIFlowManager] Last Interaction Time: {lastInteractionTime:F2}");
+        Debug.Log($"[XRUIFlowManager] Time Since Last Interaction: {timeSinceLastInteraction:F2}s");
+        Debug.Log($"[XRUIFlowManager] Debounce Time: {interactionDebounceTime:F2}s");
+        Debug.Log($"[XRUIFlowManager] Can Interact: {CanInteract("StatusCheck")}");
+        Debug.Log($"[XRUIFlowManager] Current State: {currentState}");
+        Debug.Log($"[XRUIFlowManager] Current Room Index: {currentRoomIndex}");
+        Debug.Log($"[XRUIFlowManager] Active Map Index: {activeMapIndex}");
+        Debug.Log($"[XRUIFlowManager] === END INTERACTION STATUS ===");
+    }
+    
+    [ContextMenu("Test Rapid Room Switching")]
+    public void TestRapidRoomSwitching()
+    {
+        Debug.Log("[XRUIFlowManager] Testing rapid room switching - simulating 6 rapid map clicks");
+        StartCoroutine(TestRapidRoomSwitchingCoroutine());
+    }
+    
+    private System.Collections.IEnumerator TestRapidRoomSwitchingCoroutine()
+    {
+        Debug.Log("[XRUIFlowManager] Simulating rapid switching between all 6 map buttons");
+        
+        for (int i = 0; i < 6; i++)
+        {
+            Debug.Log($"[XRUIFlowManager] Attempting to select room {i + 1} ({GetMapName(i)})");
+            OnRoomSelected(i);
+            yield return new WaitForSeconds(0.15f); // Switch every 150ms
+        }
+        
+        Debug.Log("[XRUIFlowManager] Rapid room switching test complete");
+    }
+    
+    [ContextMenu("Kill All UI Animations")]
+    public void KillAllUIAnimations()
+    {
+        Debug.Log("[XRUIFlowManager] Killing all UI animations manually");
+        
+        // Kill all specific animations
+        KillSpecificAnimations("Emergency");
+        
+        // Reset transition state
+        isTransitioning = false;
+        isTogglingMode = false;
+        
+        Debug.Log("[XRUIFlowManager] All animations killed and state reset");
+    }
+    
+    [ContextMenu("Test Basic UI Flow")]
+    public void TestBasicUIFlow()
+    {
+        Debug.Log("[XRUIFlowManager] Testing basic UI flow: Start → MainMenu → MapMain → Back");
+        StartCoroutine(TestBasicUIFlowCoroutine());
+    }
+    
+    private System.Collections.IEnumerator TestBasicUIFlowCoroutine()
+    {
+        Debug.Log("[XRUIFlowManager] Step 1: Go to MainMenu");
+        ShowMainMenu();
+        yield return new WaitForSeconds(2f);
+        
+        Debug.Log("[XRUIFlowManager] Step 2: Go to MapView");
+        ShowMapView();
+        yield return new WaitForSeconds(2f);
+        
+        Debug.Log("[XRUIFlowManager] Step 3: Go back to MainMenu");
+        HideMapView();
+        yield return new WaitForSeconds(2f);
+        
+        Debug.Log("[XRUIFlowManager] Basic UI flow test complete");
+    }
+    
     private System.Collections.IEnumerator TestMapButtonTextColorCoroutine()
     {
         yield return new WaitForSeconds(2f);
@@ -2110,4 +2311,18 @@ public class XRUIFlowManager : MonoBehaviour
     public int GetActiveMapIndex() => activeMapIndex;
     public bool IsLightMode() => isLightMode;
     public bool IsTogglingMode() => isTogglingMode;
+    
+    // Public method for external components (like RoomTeleportButton) to close the map view
+    public void CloseMapView()
+    {
+        if (!CanInteract("ExternalClose")) return;
+        
+        RegisterInteraction("ExternalClose");
+        if (enableDebugLogs) Debug.Log("[XRUIFlowManager] CloseMapView called externally (e.g., from teleport button)");
+        
+        // Reset all button active states
+        ResetAllButtonActiveStates();
+        
+        HideMapView();
+    }
 } 
