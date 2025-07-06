@@ -44,23 +44,23 @@ MonoBehaviour:
       m_Variable: {fileID: 0}
     m_List:
     - stateName: disabled
-      animationStateStartValue: {r: 1, g: 0.84313726, b: 0.68235296, a: 0.48235294}
-      animationStateEndValue: {r: 1, g: 0.84313726, b: 0.68235296, a: 0.48235294}
+      animationStateStartValue: {r: 1, g: 0.036188845, b: 0, a: 0.48235294}
+      animationStateEndValue: {r: 1, g: 0.091103174, b: 0, a: 0.48235294}
     - stateName: idle
-      animationStateStartValue: {r: 1, g: 0.84313726, b: 0.68235296, a: 0.48235294}
-      animationStateEndValue: {r: 1, g: 0.84313726, b: 0.68235296, a: 0.48235294}
+      animationStateStartValue: {r: 0.8352941, g: 0.78431374, b: 0.73333335, a: 0.48235294}
+      animationStateEndValue: {r: 0.8352941, g: 0.78431374, b: 0.73333335, a: 0.48235294}
     - stateName: hovered
-      animationStateStartValue: {r: 1, g: 0.84313726, b: 0.68235296, a: 0.48235294}
-      animationStateEndValue: {r: 1, g: 0.84313726, b: 0.68235296, a: 0.48235294}
+      animationStateStartValue: {r: 0.1764706, g: 0.1764706, b: 0.1764706, a: 0.48235294}
+      animationStateEndValue: {r: 0.1764706, g: 0.1764706, b: 0.1764706, a: 0.48235294}
     - stateName: hoveredPriority
-      animationStateStartValue: {r: 1, g: 0.84313726, b: 0.68235296, a: 0.48235294}
-      animationStateEndValue: {r: 1, g: 0.84313726, b: 0.68235296, a: 0.48235294}
+      animationStateStartValue: {r: 0.8352941, g: 0.78431374, b: 0.73333335, a: 0.48235294}
+      animationStateEndValue: {r: 0.8352941, g: 0.78431374, b: 0.73333335, a: 0.48235294}
     - stateName: selected
       animationStateStartValue: {r: 0.1764706, g: 0.1764706, b: 0.1764706, a: 0.48235294}
       animationStateEndValue: {r: 0.1764706, g: 0.1764706, b: 0.1764706, a: 0.48235294}
     - stateName: activated
-      animationStateStartValue: {r: 1, g: 0.84313726, b: 0.68235296, a: 0.48235294}
-      animationStateEndValue: {r: 1, g: 0.84313726, b: 0.68235296, a: 0.48235294}
+      animationStateStartValue: {r: 0.1764706, g: 0.1764706, b: 0.1764706, a: 0.48235294}
+      animationStateEndValue: {r: 0.1764706, g: 0.1764706, b: 0.1764706, a: 0.48235294}
     - stateName: focused
       animationStateStartValue: {r: 0.1764706, g: 0.1764706, b: 0.1764706, a: 0.48235294}
       animationStateEndValue: {r: 0.1764706, g: 0.1764706, b: 0.1764706, a: 0.48235294}

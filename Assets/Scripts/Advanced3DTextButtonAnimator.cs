@@ -8,6 +8,8 @@ public class Advanced3DTextButtonAnimator : MonoBehaviour
     [Header("Sprite Animation Settings")]
     [SerializeField] private float spriteFadeDuration = 1.0f;
     [SerializeField] private Ease spriteEase = Ease.OutQuart;
+    [SerializeField] private float spriteScaleStartMultiplier = 0.8f; // Start at 80% of original size
+    [SerializeField] private bool enableSpriteScaleAnimation = true;
     
     [Header("Button Animation Settings")]
     [SerializeField] private float buttonDelayAfterSprite = 0.3f;
@@ -24,7 +26,10 @@ public class Advanced3DTextButtonAnimator : MonoBehaviour
     
     private Color originalSpriteColor;
     private Vector3 originalButtonScale;
+    private Vector3 originalSpriteScale;
     private bool isAnimating = false;
+    private Material spriteMaterial;
+    private float originalMaterialAlpha;
     
     private void Awake()
     {
@@ -72,6 +77,26 @@ public class Advanced3DTextButtonAnimator : MonoBehaviour
         if (targetSprite != null)
         {
             originalSpriteColor = targetSprite.color;
+            originalSpriteScale = targetSprite.transform.localScale;
+            
+            // Get the material and store its original alpha
+            spriteMaterial = targetSprite.material;
+            if (spriteMaterial != null)
+            {
+                // Check if material has alpha property
+                if (spriteMaterial.HasProperty("_Color"))
+                {
+                    originalMaterialAlpha = spriteMaterial.color.a;
+                }
+                else if (spriteMaterial.HasProperty("_BaseColor"))
+                {
+                    originalMaterialAlpha = spriteMaterial.GetColor("_BaseColor").a;
+                }
+                else
+                {
+                    originalMaterialAlpha = 1f; // Default to opaque
+                }
+            }
         }
         
         if (targetButton != null)
@@ -106,9 +131,28 @@ public class Advanced3DTextButtonAnimator : MonoBehaviour
         // Reset sprite
         if (targetSprite != null)
         {
-            Color transparentColor = originalSpriteColor;
-            transparentColor.a = 0f;
-            targetSprite.color = transparentColor;
+            // Reset material alpha if available
+            if (spriteMaterial != null)
+            {
+                SetMaterialAlpha(0f);
+            }
+            else
+            {
+                // Fallback to sprite color alpha
+                Color transparentColor = originalSpriteColor;
+                transparentColor.a = 0f;
+                targetSprite.color = transparentColor;
+            }
+            
+            // Reset sprite scale to a subtle smaller size for elegant scale-up effect
+            if (enableSpriteScaleAnimation)
+            {
+                targetSprite.transform.localScale = originalSpriteScale * spriteScaleStartMultiplier;
+            }
+            else
+            {
+                targetSprite.transform.localScale = originalSpriteScale;
+            }
         }
         
         // Reset button
@@ -142,16 +186,37 @@ public class Advanced3DTextButtonAnimator : MonoBehaviour
     
     private IEnumerator AnimateSpriteFadeIn()
     {
-        // Start with transparent color
-        Color transparentColor = originalSpriteColor;
-        transparentColor.a = 0f;
-        targetSprite.color = transparentColor;
+        // Use material alpha animation if available, otherwise fallback to sprite color
+        if (spriteMaterial != null)
+        {
+            // Start with transparent material
+            SetMaterialAlpha(0f);
+            
+            // Animate material alpha to original value
+            DOVirtual.Float(0f, originalMaterialAlpha, spriteFadeDuration, SetMaterialAlpha)
+                .SetEase(spriteEase);
+        }
+        else
+        {
+            // Fallback to sprite color animation
+            Color transparentColor = originalSpriteColor;
+            transparentColor.a = 0f;
+            targetSprite.color = transparentColor;
+            
+            // Fade in the sprite smoothly
+            targetSprite.DOColor(originalSpriteColor, spriteFadeDuration)
+                .SetEase(spriteEase);
+        }
         
-        // Fade in the sprite smoothly
-        targetSprite.DOColor(originalSpriteColor, spriteFadeDuration)
-            .SetEase(spriteEase);
+        // Simultaneously animate sprite scale from smaller to original size for elegant effect
+        if (enableSpriteScaleAnimation)
+        {
+            targetSprite.transform.DOScale(originalSpriteScale, spriteFadeDuration)
+                .SetEase(spriteEase)
+                .SetTarget(this);
+        }
         
-        // Wait for the fade to complete
+        // Wait for both animations to complete
         yield return new WaitForSeconds(spriteFadeDuration);
     }
     
@@ -166,6 +231,35 @@ public class Advanced3DTextButtonAnimator : MonoBehaviour
         targetButton.transform.DOScale(originalButtonScale, buttonScaleDuration)
             .SetEase(buttonScaleEase)
             .SetTarget(this);
+    }
+    
+    private void SetMaterialAlpha(float alpha)
+    {
+        if (spriteMaterial == null) return;
+        
+        // Try different material properties depending on shader type
+        if (spriteMaterial.HasProperty("_Color"))
+        {
+            Color color = spriteMaterial.color;
+            color.a = alpha;
+            spriteMaterial.color = color;
+        }
+        else if (spriteMaterial.HasProperty("_BaseColor"))
+        {
+            Color color = spriteMaterial.GetColor("_BaseColor");
+            color.a = alpha;
+            spriteMaterial.SetColor("_BaseColor", color);
+        }
+        else if (spriteMaterial.HasProperty("_TintColor"))
+        {
+            Color color = spriteMaterial.GetColor("_TintColor");
+            color.a = alpha;
+            spriteMaterial.SetColor("_TintColor", color);
+        }
+        else if (spriteMaterial.HasProperty("_Alpha"))
+        {
+            spriteMaterial.SetFloat("_Alpha", alpha);
+        }
     }
     
     private void OnDestroy()
@@ -186,7 +280,27 @@ public class Advanced3DTextButtonAnimator : MonoBehaviour
     {
         originalSpriteColor = newColor;
         if (!isAnimating && targetSprite != null)
-            targetSprite.color = newColor;
+        {
+            if (spriteMaterial != null)
+            {
+                // Update material color
+                if (spriteMaterial.HasProperty("_Color"))
+                {
+                    spriteMaterial.color = newColor;
+                }
+                else if (spriteMaterial.HasProperty("_BaseColor"))
+                {
+                    spriteMaterial.SetColor("_BaseColor", newColor);
+                }
+                // Also update the original material alpha
+                originalMaterialAlpha = newColor.a;
+            }
+            else
+            {
+                // Fallback to sprite color
+                targetSprite.color = newColor;
+            }
+        }
     }
     
     public void SetAnimationSpeed(float speedMultiplier)
@@ -198,5 +312,11 @@ public class Advanced3DTextButtonAnimator : MonoBehaviour
     public void PlayAnimationWithDelay(float delay)
     {
         DOVirtual.DelayedCall(delay, PlayAnimation);
+    }
+    
+    public void SetSpriteScaleAnimation(bool enabled, float startMultiplier = 0.8f)
+    {
+        enableSpriteScaleAnimation = enabled;
+        spriteScaleStartMultiplier = startMultiplier;
     }
 } 

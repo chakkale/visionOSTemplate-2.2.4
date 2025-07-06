@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3785791359807925384}
   m_Layer: 5
-  m_Name: M-2D
+  m_Name: C-2D Old
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -147,9 +147,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'M-2D
+  m_text: 'C-2D
 
-    THIRD
+    FIRST
 
     FLOOR'
   m_isRightToLeft: 0

@@ -11,7 +11,7 @@ public class HDRISkyController : MonoBehaviour
     [SerializeField] private float smoothSpeed = 10f;     // Controls how smooth the rotation transitions are
     [SerializeField] private Transform skyboxSphere;      // Reference to the sphere with reversed normals
     [SerializeField] private LayerMask uiLayerMask = 1 << 5; // Layer mask for UI elements (default: layer 5)
-    [SerializeField] private bool debugUIInteraction = false; // Enable debug logging for UI interaction detection
+    //[SerializeField] private bool debugUIInteraction = false; // Enable debug logging for UI interaction detection
     
     // Input System references
     [Header("Input")]
@@ -80,8 +80,6 @@ public class HDRISkyController : MonoBehaviour
         // Check if UI is being interacted with using multiple methods
         if (IsUIBeingInteracted())
         {
-            if (debugUIInteraction)
-                Debug.Log("UI interaction detected - blocking sphere rotation");
             wasPinching = false;
             return;
         }
@@ -172,8 +170,6 @@ public class HDRISkyController : MonoBehaviour
                 // First check the XR interactor hit
                 if (interactorHit.transform != null && IsOnUILayer(interactorHit.transform.gameObject.layer))
                 {
-                    if (debugUIInteraction)
-                        Debug.Log($"XR Ray pointing at UI object '{interactorHit.transform.gameObject.name}' on layer {interactorHit.transform.gameObject.layer} - blocking sphere rotation");
                     return true;
                 }
             }
@@ -186,8 +182,6 @@ public class HDRISkyController : MonoBehaviour
             // Raycast specifically against UI layer objects
             if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit physicsHit, Mathf.Infinity, uiLayerMask))
             {
-                if (debugUIInteraction)
-                    Debug.Log($"Physics raycast hit UI object '{physicsHit.transform.gameObject.name}' on layer {physicsHit.transform.gameObject.layer} - blocking sphere rotation");
                 return true;
             }
         }
