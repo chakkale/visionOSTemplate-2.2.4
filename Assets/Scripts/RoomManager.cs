@@ -53,10 +53,11 @@ public class RoomManager : MonoBehaviour
             isFading = false;
             yield break;
         }
-        // Set the correct texture from RoomData
-        if (roomData.roomTexture != null)
+        // Set the correct texture from RoomData based on current night mode
+        Texture2D textureToUse = GetTextureForCurrentMode(roomData);
+        if (textureToUse != null)
         {
-            nextSphereRenderer.material.SetTexture("_MainTex", roomData.roomTexture);
+            nextSphereRenderer.material.SetTexture("_MainTex", textureToUse);
         }
         // Set initial opacity to 0
         nextSphereRenderer.material.SetFloat("_Opacity", 0f);
@@ -203,6 +204,44 @@ public class RoomManager : MonoBehaviour
                 return mr.transform;
         }
         return null;
+    }
+    
+    /// <summary>
+    /// Gets the appropriate texture for the current lighting mode
+    /// </summary>
+    /// <param name="roomData">The room data to get texture from</param>
+    /// <returns>The texture to use based on current night mode state</returns>
+    private Texture2D GetTextureForCurrentMode(RoomData roomData)
+    {
+        if (roomData == null) return null;
+        
+        // Check if NightModeManager exists and get night mode state
+        bool isNightMode = false;
+        var nightModeManager = FindFirstObjectByType<NightModeManager>();
+        if (nightModeManager != null)
+        {
+            isNightMode = nightModeManager.IsNightMode();
+        }
+        
+        return roomData.GetTextureForMode(isNightMode);
+    }
+    
+    /// <summary>
+    /// Updates the current room's texture based on night mode state (called by NightModeManager)
+    /// </summary>
+    public void UpdateCurrentRoomForNightMode()
+    {
+        if (currentRoomData == null || currentSphereRenderer == null) return;
+        
+        Texture2D textureToUse = GetTextureForCurrentMode(currentRoomData);
+        if (textureToUse != null)
+        {
+            currentSphereRenderer.material.SetTexture("_MainTex", textureToUse);
+            
+            var nightModeManager = FindFirstObjectByType<NightModeManager>();
+            bool isNight = nightModeManager != null && nightModeManager.IsNightMode();
+            Debug.Log($"[RoomManager] Updated current room texture for {(isNight ? "night" : "day")} mode");
+        }
     }
     
     // Notify UI components that the room has changed

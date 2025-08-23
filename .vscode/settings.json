@@ -56,5 +56,13 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "visionOSTemplate-2.2.4.sln"
+    "dotnet.defaultSolution": "visionOSTemplate-2.2.4.sln",
+    "chat.mcp.serverSampling": {
+        "visionOSTemplate-2.2.4/.vscode/mcp.json: Unity-MCP": {
+            "allowedModels": [
+                "copilot/gpt-4.1",
+                "copilot/claude-sonnet-4"
+            ]
+        }
+    }
 }

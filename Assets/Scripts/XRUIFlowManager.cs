@@ -5,6 +5,9 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.AffordanceSystem.State;
 using TMPro;
 using DG.Tweening;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class XRUIFlowManager : MonoBehaviour
 {
@@ -716,6 +719,9 @@ public class XRUIFlowManager : MonoBehaviour
         HideSpecificRoom(oldRoomIndex, () => {
             if (enableDebugLogs) Debug.Log($"[XRUIFlowManager] Old room {oldRoomIndex + 1} hidden, now showing room {roomIndex + 1}");
             ShowRoom(roomIndex);
+            
+            // NEW: Actually load the room data through RoomManager
+            LoadRoomData(roomIndex);
         });
     }
     
@@ -1044,6 +1050,56 @@ public class XRUIFlowManager : MonoBehaviour
         }
     }
     
+    /// <summary>
+    /// Loads the actual room data through RoomManager based on room index
+    /// </summary>
+    /// <param name="roomIndex">The index of the room to load (0 = Patio, 1-6 = E-4D rooms)</param>
+    private void LoadRoomData(int roomIndex)
+    {
+        if (enableDebugLogs) Debug.Log($"[XRUIFlowManager] LoadRoomData called for room index: {roomIndex}");
+        
+        // Map room indices to their corresponding RoomData assets
+        string[] roomAssetPaths = {
+            "Assets/Wizio/Rooms/Patio/Patio.asset",           // Index 0 = Patio
+            "Assets/Wizio/Rooms/2A/E-4D-C01.asset",          // Index 1 = E-4D-C01
+            "Assets/Wizio/Rooms/2A/E-4D-C02.asset",          // Index 2 = E-4D-C02
+            "Assets/Wizio/Rooms/2A/E-4D-C03.asset",          // Index 3 = E-4D-C03
+            "Assets/Wizio/Rooms/2A/E-4D-C04.asset",          // Index 4 = E-4D-C04
+            "Assets/Wizio/Rooms/2A/E-4D-C05.asset"           // Index 5 = E-4D-C05
+        };
+        
+        if (roomIndex < 0 || roomIndex >= roomAssetPaths.Length)
+        {
+            Debug.LogWarning($"[XRUIFlowManager] Invalid room index: {roomIndex}. Must be 0-{roomAssetPaths.Length - 1}");
+            return;
+        }
+        
+#if UNITY_EDITOR
+        // Load the RoomData asset
+        RoomData roomData = UnityEditor.AssetDatabase.LoadAssetAtPath<RoomData>(roomAssetPaths[roomIndex]);
+        if (roomData == null)
+        {
+            Debug.LogError($"[XRUIFlowManager] Failed to load RoomData from: {roomAssetPaths[roomIndex]}");
+            return;
+        }
+        
+        if (enableDebugLogs) Debug.Log($"[XRUIFlowManager] Loaded RoomData: {roomData.roomName}");
+        
+        // Call RoomManager to actually load the room
+        if (RoomManager.Instance != null)
+        {
+            RoomManager.Instance.TeleportToRoom(roomData);
+            if (enableDebugLogs) Debug.Log($"[XRUIFlowManager] Triggered RoomManager.TeleportToRoom for: {roomData.roomName}");
+        }
+        else
+        {
+            Debug.LogError("[XRUIFlowManager] RoomManager.Instance is null!");
+        }
+#else
+        Debug.LogWarning("[XRUIFlowManager] LoadRoomData only works in editor mode for asset loading");
+#endif
+    }
+
     private Vector3 GetButtonOriginalScale(GameObject button)
     {
         if (button == mapButton) return mapButtonOriginalScale;
@@ -1358,6 +1414,9 @@ public class XRUIFlowManager : MonoBehaviour
                 FadeSprite(iconLight, 1f, () => {
                     isTogglingMode = false;
                     if (enableDebugLogs) Debug.Log("[XRUIFlowManager] Light mode transition complete");
+                    
+                    // Notify NightModeManager of the change
+                    NotifyNightModeManager();
                 });
             });
         }
@@ -1369,12 +1428,34 @@ public class XRUIFlowManager : MonoBehaviour
                 FadeSprite(iconDark, 1f, () => {
                     isTogglingMode = false;
                     if (enableDebugLogs) Debug.Log("[XRUIFlowManager] Dark mode transition complete");
+                    
+                    // Notify NightModeManager of the change
+                    NotifyNightModeManager();
                 });
             });
         }
         
         // TODO: Add actual dark/light mode functionality here
         // This could include changing lighting, environment colors, UI themes, etc.
+    }
+    
+    /// <summary>
+    /// Notifies the NightModeManager about the current light mode state
+    /// </summary>
+    private void NotifyNightModeManager()
+    {
+        Debug.Log($"[XRUIFlowManager] NotifyNightModeManager called - isLightMode: {isLightMode}");
+        
+        var nightModeManager = FindFirstObjectByType<NightModeManager>();
+        if (nightModeManager != null)
+        {
+            Debug.Log($"[XRUIFlowManager] Found NightModeManager, calling OnUILightModeChanged({isLightMode})");
+            nightModeManager.OnUILightModeChanged(isLightMode);
+        }
+        else if (enableDebugLogs)
+        {
+            Debug.LogWarning("[XRUIFlowManager] NightModeManager not found - room night mode won't be updated");
+        }
     }
     
     private void FadeSprite(SpriteRenderer sprite, float targetAlpha, System.Action onComplete = null)
