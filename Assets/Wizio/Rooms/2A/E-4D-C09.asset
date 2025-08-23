@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: E-4D-C09
   m_EditorClassIdentifier: 
   roomName: E-4D-C09
-  roomTexture: {fileID: 2800000, guid: 9410cff303e5a45b98ba42c4e76965a5, type: 3}
+  dayTexture: {fileID: 2800000, guid: fbd63b9fcf6b147d2954ac444dd21404, type: 3}
+  nightTexture: {fileID: 2800000, guid: fbd63b9fcf6b147d2954ac444dd21404, type: 3}
   roomPrefab: {fileID: 8559321947584718075, guid: 51b43ef3137024e3cb8acecde849a725, type: 3}
+  roomTexture: {fileID: 2800000, guid: fbd63b9fcf6b147d2954ac444dd21404, type: 3}
