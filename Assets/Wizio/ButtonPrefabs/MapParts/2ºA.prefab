@@ -147,9 +147,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "ESPECIFICACIONES T\xC9CNICAS\n\n4  Dormitorios\n4  Cuartos de Ba\xF1o\n1 
-    Aseo\n1  Trastero\n1  Parking (plaza robotizada)\n\n\nSUPERFICIES (M2)\n\n342,15\tConstruida\n538,57\tConstruida
-    + ZZCC\n8,35\t\tBalcones"
+  m_text: "\rTECHNICAL SPECIFICATIONS\n\n4 Bedrooms\n4 Bathrooms\n1 Guest Toilet\n1
+    Storage Room\n1 Parking (robotized space)\n\nFLOOR AREA (M\xB2)\n\n342.15 Built\n538.57
+    Built + Common Areas\n8.35 Balconies\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: debd43556a3fb41b08c39e1d5824c96f, type: 2}
   m_sharedMaterial: {fileID: -6187082581794501483, guid: debd43556a3fb41b08c39e1d5824c96f, type: 2}
