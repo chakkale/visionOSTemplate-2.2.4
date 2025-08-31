@@ -1063,8 +1063,8 @@ public class XRUIFlowManager : MonoBehaviour
             "Assets/Wizio/Rooms/Patio/Patio.asset",           // Index 0 = Patio
             "Assets/Wizio/Rooms/1D/E-1D-C01.asset",          // Index 1 = 1ºD
             "Assets/Wizio/Rooms/1E/E-1E-C01.asset",          // Index 2 = 1ºE
-            "Assets/Wizio/Rooms/2A/E-4D-C01.asset",          // Index 3 = 2ºA
-            "Assets/Wizio/Rooms/3A/E-4D-C01.asset",          // Index 4 = 3ºA
+            "Assets/Wizio/Rooms/2A/E-2A-C01.asset",          // Index 3 = 2ºA
+            "Assets/Wizio/Rooms/3A/E-3A-C01.asset",          // Index 4 = 3ºA
             "Assets/Wizio/Rooms/Patio/Patio.asset"           // Index 5 = Rooftop (fallback to Patio for now)
         };
         
