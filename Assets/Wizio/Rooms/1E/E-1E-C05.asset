@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b67c34e8de2d14b50b64cabb7640902f, type: 3}
+  m_Name: E-1E-C05
+  m_EditorClassIdentifier: 
+  roomName: E-1E-C05
+  dayTexture: {fileID: 2800000, guid: 09b5235fa66ea4bbb8352306f74aad22, type: 3}
+  nightTexture: {fileID: 2800000, guid: 09b5235fa66ea4bbb8352306f74aad22, type: 3}
+  roomPrefab: {fileID: 3183911297692714578, guid: 8d05eb1ecabdc4eeb9192af3c7f99da7, type: 3}
+  roomTexture: {fileID: 2800000, guid: 09b5235fa66ea4bbb8352306f74aad22, type: 3}
