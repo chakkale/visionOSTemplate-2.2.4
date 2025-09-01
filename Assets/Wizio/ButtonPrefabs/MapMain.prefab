@@ -447,7 +447,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3901778574498000225}
   - component: {fileID: 3303995229342909441}
-  - component: {fileID: 7211896445419715663}
+  - component: {fileID: 1962457146627564057}
   m_Layer: 5
   m_Name: MapMain
   m_TagString: Untagged
@@ -500,7 +500,7 @@ MonoBehaviour:
   - Order: 0
     Renderer: {fileID: 0}
     ApplyToDescendants: 0
---- !u!114 &7211896445419715663
+--- !u!114 &1962457146627564057
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -509,23 +509,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 5323302623230398828}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a2d7d89889b4d94fa1f8d6fe49788e8, type: 3}
+  m_Script: {fileID: 11500000, guid: 6ef12e413ba634c808d478ae6f6b4bdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Target: {fileID: 0}
   m_TargetOffset: {x: 0, y: 0, z: 1.2}
   m_FollowInLocalSpace: 0
   m_ApplyTargetInLocalSpace: 0
-  m_MovementSpeed: 4
+  m_MovementSpeed: 6
   m_MovementSpeedVariancePercentage: 0.25
-  m_SnapOnEnable: 0
+  m_SnapOnEnable: 1
   m_PositionFollowMode: 1
   m_MinDistanceAllowed: 0.05
   m_MaxDistanceAllowed: 0.75
   m_TimeUntilThresholdReachesMaxDistance: 3
   m_RotationFollowMode: 1
   m_MinAngleAllowed: 0.1
-  m_MaxAngleAllowed: 7.5
+  m_MaxAngleAllowed: 5
   m_TimeUntilThresholdReachesMaxAngle: 3
 --- !u!1 &7084519466231561961
 GameObject:
