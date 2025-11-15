@@ -1,0 +1,13 @@
+﻿<Solution>
+  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="Unity.XR.Interaction.Toolkit.Samples.VisionOS.csproj" />
+  <Project Path="com.IvanMurzak.Unity.MCP.Installer.Tests.csproj" />
+  <Project Path="Unity.XR.Interaction.Toolkit.Samples.StarterAssets.csproj" />
+  <Project Path="Assembly-CSharp-firstpass.csproj" />
+  <Project Path="Unity.XR.Hands.Samples.VisualizerSample.csproj" />
+  <Project Path="Unity.VisionOS.Sample.URP.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
+  <Project Path="Unity.XR.Interaction.Toolkit.Samples.StarterAssets.Editor.csproj" />
+  <Project Path="com.IvanMurzak.Unity.MCP.Installer.csproj" />
+  <Project Path="Unity.XR.Interaction.Toolkit.Samples.VisionOS.Editor.csproj" />
+</Solution>

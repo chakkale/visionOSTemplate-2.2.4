@@ -1,7 +1,6 @@
 {
-    "host": "http://localhost:60606",
-    "port": 60606,
-    "keepConnected": true,
-    "logLevel": 3,
-    "timeoutMs": 10000
+  "Host": "http://localhost:8080",
+  "KeepConnected": true,
+  "LogLevel": 3,
+  "TimeoutMs": 10000
 }

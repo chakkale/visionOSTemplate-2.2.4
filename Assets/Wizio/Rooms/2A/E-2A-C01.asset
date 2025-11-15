@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: E-2A-C01
   m_EditorClassIdentifier: 
   roomName: E-2A-C01
-  dayTexture: {fileID: 2800000, guid: 7c0a7f089964441d3965ecd829c350ea, type: 3}
-  nightTexture: {fileID: 0}
+  dayTexture: {fileID: 2800000, guid: 13b0ae5d8a74d415ba1627bff629d944, type: 3}
+  nightTexture: {fileID: 2800000, guid: e5a7f177a410a4b11ab9905c7e8b6d12, type: 3}
   roomPrefab: {fileID: 3183911297692714578, guid: 97a4e8242d22546e4a3df3c194d52811, type: 3}
-  roomTexture: {fileID: 2800000, guid: 7c0a7f089964441d3965ecd829c350ea, type: 3}
+  roomTexture: {fileID: 2800000, guid: 13b0ae5d8a74d415ba1627bff629d944, type: 3}

@@ -56,7 +56,7 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "visionOSTemplate-2.2.4.sln",
+    "dotnet.defaultSolution": "visionOSTemplate-2.2.4.slnx",
     "chat.mcp.serverSampling": {
         "visionOSTemplate-2.2.4/.vscode/mcp.json: Unity-MCP": {
             "allowedModels": [

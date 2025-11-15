@@ -1,9 +1,10 @@
 {
   "servers": {
     "Unity-MCP": {
+      "type": "stdio",
       "command": "/Volumes/DA-MacExternal/DA/Documents/visionOSTemplate-2.2.4/Library/mcp-server/osx-arm64/unity-mcp-server",
       "args": [
-        "--plugin-port=60606",
+        "--port=8080",
         "--plugin-timeout=10000",
         "--client-transport=stdio"
       ]
