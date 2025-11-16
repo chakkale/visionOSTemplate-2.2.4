@@ -54,30 +54,88 @@ public class InitialDownloadScene : MonoBehaviour
             LoadMainScene();
             yield break;
         }
+        
+        Debug.LogWarning("[InitialDownload] Running addressables in EDITOR mode - this is for testing only!");
+        Debug.LogWarning("[InitialDownload] For real device testing, build to Xcode and run on visionOS simulator/device");
         #endif
         
         // Initialize Addressables
-        var initHandle = Addressables.InitializeAsync();
-        yield return initHandle;
-        
-        if (!initHandle.IsValid() || initHandle.Status != AsyncOperationStatus.Succeeded)
+        if (enableDebugLogs)
         {
-            Debug.LogError($"[InitialDownload] Addressables initialization failed. Status: {(initHandle.IsValid() ? initHandle.Status.ToString() : "Invalid")}");
-            if (initHandle.IsValid())
+            Debug.Log($"[InitialDownload] Starting Addressables initialization");
+            #if UNITY_EDITOR
+            Debug.Log($"[InitialDownload] Platform: UNITY_EDITOR");
+            #elif UNITY_VISIONOS
+            Debug.Log($"[InitialDownload] Platform: UNITY_VISIONOS");
+            #else
+            Debug.Log($"[InitialDownload] Platform: OTHER");
+            #endif
+            Debug.Log($"[InitialDownload] RuntimePath: {UnityEngine.AddressableAssets.Addressables.RuntimePath}");
+            Debug.Log($"[InitialDownload] PersistentDataPath: {Application.persistentDataPath}");
+            Debug.Log($"[InitialDownload] StreamingAssetsPath: {Application.streamingAssetsPath}");
+            
+            // Check if catalog files exist
+            var runtimePath = UnityEngine.AddressableAssets.Addressables.RuntimePath;
+            var catalogPath = System.IO.Path.Combine(runtimePath, "VisionOS", "catalog.bin");
+            var hashPath = System.IO.Path.Combine(runtimePath, "VisionOS", "catalog.hash");
+            var settingsPath = System.IO.Path.Combine(runtimePath, "VisionOS", "settings.json");
+            
+            Debug.Log($"[InitialDownload] Checking catalog.bin at: {catalogPath}");
+            Debug.Log($"[InitialDownload] catalog.bin exists: {System.IO.File.Exists(catalogPath)}");
+            Debug.Log($"[InitialDownload] catalog.hash exists: {System.IO.File.Exists(hashPath)}");
+            Debug.Log($"[InitialDownload] settings.json exists: {System.IO.File.Exists(settingsPath)}");
+            
+            if (System.IO.Directory.Exists(runtimePath))
             {
-                if (initHandle.OperationException != null)
-                    Debug.LogError($"[InitialDownload] Exception: {initHandle.OperationException.Message}");
-                Addressables.Release(initHandle);
+                var files = System.IO.Directory.GetFiles(runtimePath, "*.*", System.IO.SearchOption.AllDirectories);
+                Debug.Log($"[InitialDownload] Found {files.Length} files in RuntimePath");
+                foreach (var file in files)
+                {
+                    Debug.Log($"[InitialDownload]   - {file}");
+                }
             }
-            ShowError("Failed to initialize content system. Check console for details.");
-            yield break;
+            else
+            {
+                Debug.LogError($"[InitialDownload] RuntimePath does not exist: {runtimePath}");
+            }
         }
         
-        if (initHandle.IsValid())
-            Addressables.Release(initHandle);
-        
         if (enableDebugLogs)
-            Debug.Log("[InitialDownload] Addressables initialized");
+            Debug.Log("[InitialDownload] Calling Addressables.InitializeAsync()...");
+        
+        bool initComplete = false;
+        bool initSuccess = false;
+        string initError = null;
+        
+        var initHandle = Addressables.InitializeAsync();
+        initHandle.Completed += (op) =>
+        {
+            if (op.Status == AsyncOperationStatus.Succeeded)
+            {
+                initSuccess = true;
+                if (enableDebugLogs)
+                    Debug.Log("[InitialDownload] Addressables initialized successfully");
+            }
+            else
+            {
+                initError = op.OperationException != null ? op.OperationException.ToString() : "Unknown error";
+                Debug.LogError($"[InitialDownload] Addressables initialization failed: {initError}");
+            }
+            initComplete = true;
+        };
+        
+        // Wait for completion
+        while (!initComplete)
+        {
+            yield return null;
+        }
+        
+        if (!initSuccess)
+        {
+            Debug.LogError($"[InitialDownload] Failed to initialize addressables: {initError}");
+            ShowError("Failed to initialize content system.");
+            yield break;
+        }
         
         // Check download size
         UpdateStatus("Checking for updates...");

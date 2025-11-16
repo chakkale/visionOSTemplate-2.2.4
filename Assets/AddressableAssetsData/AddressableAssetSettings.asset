@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: f13068f76196848c08680d6c6f0da0af
   m_currentHash:
     serializedVersion: 2
-    Hash: 00000000000000000000000000000000
+    Hash: 1d18a2837c642641306cced0080790d2
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 1
   m_CatalogRequestsTimeout: 0
@@ -75,7 +75,7 @@ MonoBehaviour:
       - m_Id: 82bc27d61d17d418db04251a90e2cbd5
         m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
       - m_Id: bb729689ab02e4e78b8bf351b09f924e
-        m_Value: <undefined>
+        m_Value: https://github.com/chakkale/visionOSTemplate-2.2.4/releases/download/v1.0.0
       - m_Id: e5d02807509c2418fa91f45b8fe3b3e3
         m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
       - m_Id: f7f72e8dc928c40228bd5e95edee27bb
@@ -93,7 +93,7 @@ MonoBehaviour:
       - m_Id: e5d02807509c2418fa91f45b8fe3b3e3
         m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
       - m_Id: f7f72e8dc928c40228bd5e95edee27bb
-        m_Value: '[UnityEngine.Application.dataPath]/../ServerData/[BuildTarget]'
+        m_Value: 'ServerData/[BuildTarget]'
     m_ProfileEntryNames:
     - m_Id: 6492fe3f7337d408ab33e1476969ab8c
       m_Name: Local.LoadPath
