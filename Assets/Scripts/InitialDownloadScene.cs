@@ -12,13 +12,15 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 public class InitialDownloadScene : MonoBehaviour
 {
     [Header("UI References")]
-    [SerializeField] private TextMeshProUGUI statusText;
-    [SerializeField] private TextMeshProUGUI progressText;
-    [SerializeField] private TextMeshProUGUI downloadSizeText;
-    [SerializeField] private UnityEngine.UI.Slider progressBar;
+    [SerializeField] private TextMeshPro statusText;
+    [SerializeField] private TextMeshPro progressText;
+    [SerializeField] private TextMeshPro downloadSizeText;
+    [SerializeField] private Transform progressBarVisual; // Quad that scales on X axis
     [SerializeField] private GameObject downloadPanel;
     [SerializeField] private GameObject errorPanel;
-    [SerializeField] private TextMeshProUGUI errorText;
+    [SerializeField] private TextMeshPro errorText;
+    
+    private Vector3 progressBarInitialScale;
     
     [Header("Settings")]
     [SerializeField] private string mainSceneName = "MainFinal";
@@ -34,6 +36,10 @@ public class InitialDownloadScene : MonoBehaviour
     {
         if (errorPanel != null)
             errorPanel.SetActive(false);
+        
+        // Store initial scale for progress bar
+        if (progressBarVisual != null)
+            progressBarInitialScale = progressBarVisual.localScale;
             
         StartCoroutine(InitializeAndDownload());
     }
@@ -142,6 +148,7 @@ public class InitialDownloadScene : MonoBehaviour
         
         long downloadSize = 0;
         
+        // Get size of content that needs to be downloaded (not cached)
         var sizeHandle = Addressables.GetDownloadSizeAsync("remote");
         yield return sizeHandle;
         
@@ -163,7 +170,7 @@ public class InitialDownloadScene : MonoBehaviour
             Addressables.Release(sizeHandle);
         
         if (enableDebugLogs)
-            Debug.Log($"[InitialDownload] Download size: {FormatBytes(downloadSize)}");
+            Debug.Log($"[InitialDownload] Remaining download size: {FormatBytes(downloadSize)}");
         
         // If nothing to download, proceed directly to main scene
         if (downloadSize == 0)
@@ -179,7 +186,7 @@ public class InitialDownloadScene : MonoBehaviour
         
         // Show download size
         if (downloadSizeText != null)
-            downloadSizeText.text = $"Download size: {FormatBytes(downloadSize)}";
+            downloadSizeText.text = $"Need to download: {FormatBytes(downloadSize)}";
         
         // Start download
         UpdateStatus("Downloading content...");
@@ -189,16 +196,25 @@ public class InitialDownloadScene : MonoBehaviour
         
         var downloadHandle = Addressables.DownloadDependenciesAsync("remote");
         
-        // Track progress
+        // Track progress - downloadHandle.PercentComplete is 0-1 for the content being downloaded
         while (!downloadHandle.IsDone)
         {
             float progress = downloadHandle.PercentComplete;
+            long downloadedBytes = (long)(downloadSize * progress);
+            long remainingBytes = downloadSize - downloadedBytes;
             
-            if (progressBar != null)
-                progressBar.value = progress;
+            if (progressBarVisual != null)
+            {
+                var scale = progressBarInitialScale;
+                scale.x = progressBarInitialScale.x * progress;
+                progressBarVisual.localScale = scale;
+            }
                 
             if (progressText != null)
                 progressText.text = $"{(progress * 100):F0}%";
+            
+            if (downloadSizeText != null)
+                downloadSizeText.text = $"Downloaded: {FormatBytes(downloadedBytes)} / {FormatBytes(downloadSize)}\nRemaining: {FormatBytes(remainingBytes)}";
             
             yield return null;
         }
@@ -219,8 +235,8 @@ public class InitialDownloadScene : MonoBehaviour
         
         // Download complete, proceed to main scene
         UpdateStatus("Content ready!");
-        if (progressBar != null)
-            progressBar.value = 1f;
+        if (progressBarVisual != null)
+            progressBarVisual.localScale = progressBarInitialScale;
         if (progressText != null)
             progressText.text = "100%";
         
@@ -238,8 +254,12 @@ public class InitialDownloadScene : MonoBehaviour
         {
             float progress = handle.PercentComplete;
             
-            if (progressBar != null)
-                progressBar.value = progress;
+            if (progressBarVisual != null)
+            {
+                var scale = progressBarInitialScale;
+                scale.x = progressBarInitialScale.x * progress;
+                progressBarVisual.localScale = scale;
+            }
             
             if (progressText != null)
                 progressText.text = $"{(progress * 100):F0}%";
