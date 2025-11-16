@@ -302,9 +302,20 @@ public class AddressablesWorkflowWindow : EditorWindow
             return;
         }
         
-        // Update the RemoteLoadPath variable
+        // Update the RemoteLoadPath variable (create if it doesn't exist)
         try
         {
+            // Try to get the value first to check if variable exists
+            try
+            {
+                profileSettings.GetValueById(profileId, "RemoteLoadPath");
+            }
+            catch
+            {
+                // Variable doesn't exist, create it
+                profileSettings.CreateValue("RemoteLoadPath", url);
+            }
+            
             profileSettings.SetValue(profileId, "RemoteLoadPath", url);
             EditorUtility.SetDirty(settings);
             AssetDatabase.SaveAssets();
@@ -315,7 +326,7 @@ public class AddressablesWorkflowWindow : EditorWindow
         catch (System.Exception e)
         {
             Debug.LogError($"Failed to update RemoteLoadPath: {e.Message}");
-            EditorUtility.DisplayDialog("Error", "RemoteLoadPath variable not found! Run setup first.", "OK");
+            EditorUtility.DisplayDialog("Error", $"Failed to update RemoteLoadPath: {e.Message}", "OK");
         }
     }
     
