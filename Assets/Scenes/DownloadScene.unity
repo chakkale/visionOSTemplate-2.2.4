@@ -746,7 +746,7 @@ MonoBehaviour:
   errorText: {fileID: 0}
   mainSceneName: MainFinal
   enableDebugLogs: 1
-  skipDownloadInEditor: 1
+  skipDownloadInEditor: 0
   allRooms: []
 --- !u!4 &1614371332
 Transform:
