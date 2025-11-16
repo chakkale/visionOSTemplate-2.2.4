@@ -10,6 +10,7 @@ EditorBuildSettings:
     guid: 59c040aa457144324b963233e912b06e
   m_configObjects:
     UnityEditor.XR.VisionOS.VisionOSSettings: {fileID: 11400000, guid: 25e1f68848051c946b9048e8426e646c, type: 2}
+    com.unity.addressableassets: {fileID: 11400000, guid: c32f755cbabca4574bf41609cfbb01f1, type: 2}
     com.unity.input.settings: {fileID: 11400000, guid: bb65518a4a80049acbc5e85e70dbbee0, type: 2}
     com.unity.polyspatial.xr.xr_settings: {fileID: 11400000, guid: cad8e6c3a14b3491eb1cdeb9295338f7, type: 2}
     com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: d1b44b12dbc12554c862e577406554bd, type: 2}
