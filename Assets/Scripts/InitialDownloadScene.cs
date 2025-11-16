@@ -62,12 +62,19 @@ public class InitialDownloadScene : MonoBehaviour
         
         if (!initHandle.IsValid() || initHandle.Status != AsyncOperationStatus.Succeeded)
         {
-            ShowError("Failed to initialize content system");
-            Addressables.Release(initHandle);
+            Debug.LogError($"[InitialDownload] Addressables initialization failed. Status: {(initHandle.IsValid() ? initHandle.Status.ToString() : "Invalid")}");
+            if (initHandle.IsValid())
+            {
+                if (initHandle.OperationException != null)
+                    Debug.LogError($"[InitialDownload] Exception: {initHandle.OperationException.Message}");
+                Addressables.Release(initHandle);
+            }
+            ShowError("Failed to initialize content system. Check console for details.");
             yield break;
         }
         
-        Addressables.Release(initHandle);
+        if (initHandle.IsValid())
+            Addressables.Release(initHandle);
         
         if (enableDebugLogs)
             Debug.Log("[InitialDownload] Addressables initialized");
@@ -82,13 +89,20 @@ public class InitialDownloadScene : MonoBehaviour
         
         if (!sizeHandle.IsValid() || sizeHandle.Status != AsyncOperationStatus.Succeeded)
         {
+            Debug.LogError($"[InitialDownload] Failed to check download size. Status: {(sizeHandle.IsValid() ? sizeHandle.Status.ToString() : "Invalid")}");
+            if (sizeHandle.IsValid())
+            {
+                if (sizeHandle.OperationException != null)
+                    Debug.LogError($"[InitialDownload] Exception: {sizeHandle.OperationException.Message}");
+                Addressables.Release(sizeHandle);
+            }
             ShowError("Failed to check download size");
-            Addressables.Release(sizeHandle);
             yield break;
         }
         
         downloadSize = sizeHandle.Result;
-        Addressables.Release(sizeHandle);
+        if (sizeHandle.IsValid())
+            Addressables.Release(sizeHandle);
         
         if (enableDebugLogs)
             Debug.Log($"[InitialDownload] Download size: {FormatBytes(downloadSize)}");
