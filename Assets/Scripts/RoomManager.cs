@@ -53,12 +53,69 @@ public class RoomManager : MonoBehaviour
             isFading = false;
             yield break;
         }
-        // Set the correct texture from RoomData based on current night mode
-        Texture2D textureToUse = GetTextureForCurrentMode(roomData);
+        
+        // Load texture asynchronously if using addressables, otherwise use direct reference
+        bool textureLoaded = false;
+        Texture2D textureToUse = null;
+        
+        if (roomData.UsesAddressables())
+        {
+            // Check if NightModeManager exists and get night mode state
+            bool isNightMode = false;
+            var nightModeManager = FindFirstObjectByType<NightModeManager>();
+            if (nightModeManager != null)
+            {
+                isNightMode = nightModeManager.IsNightMode();
+            }
+            
+            string textureAddress = roomData.GetTextureAddressForMode(isNightMode);
+            
+            // Try to get from cache first
+            if (TextureDownloadManager.Instance != null)
+            {
+                textureToUse = TextureDownloadManager.Instance.GetCachedTexture(textureAddress);
+                
+                if (textureToUse == null)
+                {
+                    // Load asynchronously
+                    Debug.Log($"[RoomManager] Loading texture from addressables: {textureAddress}");
+                    TextureDownloadManager.Instance.LoadTextureAsync(textureAddress,
+                        (loadedTexture) => {
+                            textureToUse = loadedTexture;
+                            textureLoaded = true;
+                        },
+                        (error) => {
+                            Debug.LogError($"[RoomManager] Failed to load texture: {error}");
+                            textureLoaded = true; // Continue even if failed
+                        }
+                    );
+                    
+                    // Wait for texture to load
+                    yield return new WaitUntil(() => textureLoaded);
+                }
+            }
+            else
+            {
+                Debug.LogWarning("[RoomManager] TextureDownloadManager not found, falling back to direct reference");
+                textureToUse = GetTextureForCurrentMode(roomData);
+            }
+        }
+        else
+        {
+            // Use direct reference (legacy mode)
+            textureToUse = GetTextureForCurrentMode(roomData);
+        }
+        
+        // Set the texture on the material
         if (textureToUse != null)
         {
             nextSphereRenderer.material.SetTexture("_MainTex", textureToUse);
         }
+        else
+        {
+            Debug.LogWarning($"[RoomManager] No texture available for room: {roomData.roomName}");
+        }
+        
         // Set initial opacity to 0
         nextSphereRenderer.material.SetFloat("_Opacity", 0f);
 
@@ -233,14 +290,40 @@ public class RoomManager : MonoBehaviour
     {
         if (currentRoomData == null || currentSphereRenderer == null) return;
         
-        Texture2D textureToUse = GetTextureForCurrentMode(currentRoomData);
-        if (textureToUse != null)
+        // Use addressables if available, otherwise fall back to direct reference
+        if (currentRoomData.UsesAddressables() && TextureDownloadManager.Instance != null)
         {
-            currentSphereRenderer.material.SetTexture("_MainTex", textureToUse);
-            
             var nightModeManager = FindFirstObjectByType<NightModeManager>();
-            bool isNight = nightModeManager != null && nightModeManager.IsNightMode();
-            Debug.Log($"[RoomManager] Updated current room texture for {(isNight ? "night" : "day")} mode");
+            bool isNightMode = nightModeManager != null && nightModeManager.IsNightMode();
+            
+            string textureAddress = currentRoomData.GetTextureAddressForMode(isNightMode);
+            
+            // Try to load from cache or download
+            TextureDownloadManager.Instance.LoadTextureAsync(textureAddress,
+                (loadedTexture) => {
+                    if (currentSphereRenderer != null)
+                    {
+                        currentSphereRenderer.material.SetTexture("_MainTex", loadedTexture);
+                        Debug.Log($"[RoomManager] Updated current room texture for {(isNightMode ? "night" : "day")} mode");
+                    }
+                },
+                (error) => {
+                    Debug.LogError($"[RoomManager] Failed to load texture for night mode update: {error}");
+                }
+            );
+        }
+        else
+        {
+            // Legacy direct reference mode
+            Texture2D textureToUse = GetTextureForCurrentMode(currentRoomData);
+            if (textureToUse != null)
+            {
+                currentSphereRenderer.material.SetTexture("_MainTex", textureToUse);
+                
+                var nightModeManager = FindFirstObjectByType<NightModeManager>();
+                bool isNight = nightModeManager != null && nightModeManager.IsNightMode();
+                Debug.Log($"[RoomManager] Updated current room texture for {(isNight ? "night" : "day")} mode");
+            }
         }
     }
     

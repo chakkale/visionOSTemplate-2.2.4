@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: E-2A-C07
   m_EditorClassIdentifier: 
   roomName: Hallway
+  dayTextureAddress: SG_Int_E-4D_360_C07
+  nightTextureAddress: SG_Int_E-4D_360_C07
   dayTexture: {fileID: 2800000, guid: 6a976480d2d7940538116fb1596a25bc, type: 3}
   nightTexture: {fileID: 2800000, guid: 6a976480d2d7940538116fb1596a25bc, type: 3}
   roomPrefab: {fileID: 5680229361372690979, guid: ca3a63110a01b4ba193504e0d8f583ec, type: 3}

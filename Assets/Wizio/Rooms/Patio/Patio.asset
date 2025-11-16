@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b67c34e8de2d14b50b64cabb7640902f, type: 3}
   m_Name: Patio
   m_EditorClassIdentifier: 
-  roomName: Patio01
+  roomName: Entrance
+  dayTextureAddress: PatioPlaceholder
+  nightTextureAddress: SG_Int_E-4D_360_C01_Combined
   dayTexture: {fileID: 2800000, guid: b785f3559ec384fcd8ddfcf201fde3e0, type: 3}
   nightTexture: {fileID: 2800000, guid: 8562f5f58bbd54f35be09ad1381af179, type: 3}
   roomPrefab: {fileID: 3183911297692714578, guid: 2831b7ecb274e41758dfd2287166b899, type: 3}

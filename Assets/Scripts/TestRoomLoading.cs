@@ -43,7 +43,7 @@ public class TestRoomLoading : MonoBehaviour
     {
         Debug.Log("[TestRoomLoading] Testing night mode...");
         
-        var nightModeManager = FindObjectOfType<NightModeManager>();
+        var nightModeManager = FindFirstObjectByType<NightModeManager>();
         if (nightModeManager != null)
         {
             // Toggle night mode

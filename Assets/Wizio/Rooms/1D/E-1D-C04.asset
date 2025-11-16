@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: E-1D-C04
   m_EditorClassIdentifier: 
   roomName: Main Bathroom
+  dayTextureAddress: SG_Int_D-3D_360_C04
+  nightTextureAddress: SG_Int_D-3D_360_C04
   dayTexture: {fileID: 2800000, guid: 974e856809db04c64b31f20007601968, type: 3}
   nightTexture: {fileID: 2800000, guid: 974e856809db04c64b31f20007601968, type: 3}
   roomPrefab: {fileID: 3183911297692714578, guid: 0da467d9985064b7a963a60a284c451b, type: 3}

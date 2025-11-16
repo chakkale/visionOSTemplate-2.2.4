@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: E-3A-C01
   m_EditorClassIdentifier: 
   roomName: Dining Room
+  dayTextureAddress: SG_Int_M-2D_360_C01
+  nightTextureAddress: SG_Int_M-2D_360_C01
   dayTexture: {fileID: 2800000, guid: d7996fb993d504f5fb8f52206fb6086b, type: 3}
   nightTexture: {fileID: 2800000, guid: d7996fb993d504f5fb8f52206fb6086b, type: 3}
   roomPrefab: {fileID: 3183911297692714578, guid: e4cd4ad1e5c814f5e9942302de57b336, type: 3}

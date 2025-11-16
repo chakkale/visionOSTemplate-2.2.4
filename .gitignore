@@ -86,4 +86,5 @@ crashlytics-build.properties
 /[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Flow/UnitOptions.db.meta
 /[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Core/Property Providers
 /[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Core/Property Providers.meta
-/Assets/Wizio/Renders
+# Note: Renders folder now tracked via Git LFS for remote addressables
+# /Assets/Wizio/Renders

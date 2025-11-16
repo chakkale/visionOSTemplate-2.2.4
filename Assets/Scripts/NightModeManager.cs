@@ -160,22 +160,57 @@ public class NightModeManager : MonoBehaviour
             Debug.Log($"[NightModeManager] Night texture: {(currentRoom.nightTexture != null ? currentRoom.nightTexture.name : "null")}");
         }
         
-        // Get the target texture for the new mode
-        Texture2D targetTexture = currentRoom.GetTextureForMode(isNightMode);
-        if (targetTexture == null)
+        // Check if using addressables
+        if (currentRoom.UsesAddressables() && TextureDownloadManager.Instance != null)
         {
-            Debug.LogWarning($"[NightModeManager] No {(isNightMode ? "night" : "day")} texture available for room '{currentRoom.roomName}'");
-            return;
+            string textureAddress = currentRoom.GetTextureAddressForMode(isNightMode);
+            
+            if (enableDebugLogs)
+            {
+                Debug.Log($"[NightModeManager] Loading texture from addressables: {textureAddress}");
+            }
+            
+            // Load texture asynchronously
+            TextureDownloadManager.Instance.LoadTextureAsync(textureAddress,
+                (loadedTexture) => {
+                    if (loadedTexture != null)
+                    {
+                        if (enableDebugLogs)
+                        {
+                            string modeName = isNightMode ? "night" : "day";
+                            Debug.Log($"[NightModeManager] Starting crossfade to {modeName} mode with texture: {loadedTexture.name}");
+                        }
+                        StartCoroutine(CrossfadeToTexture(loadedTexture));
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[NightModeManager] Loaded texture is null for address: {textureAddress}");
+                    }
+                },
+                (error) => {
+                    Debug.LogError($"[NightModeManager] Failed to load texture: {error}");
+                }
+            );
         }
-        
-        if (enableDebugLogs)
+        else
         {
-            string modeName = isNightMode ? "night" : "day";
-            Debug.Log($"[NightModeManager] Starting crossfade to {modeName} mode with texture: {targetTexture.name}");
+            // Legacy mode: Get the target texture for the new mode
+            Texture2D targetTexture = currentRoom.GetTextureForMode(isNightMode);
+            if (targetTexture == null)
+            {
+                Debug.LogWarning($"[NightModeManager] No {(isNightMode ? "night" : "day")} texture available for room '{currentRoom.roomName}'");
+                return;
+            }
+            
+            if (enableDebugLogs)
+            {
+                string modeName = isNightMode ? "night" : "day";
+                Debug.Log($"[NightModeManager] Starting crossfade to {modeName} mode with texture: {targetTexture.name}");
+            }
+            
+            // Start the crossfade coroutine
+            StartCoroutine(CrossfadeToTexture(targetTexture));
         }
-        
-        // Start the crossfade coroutine
-        StartCoroutine(CrossfadeToTexture(targetTexture));
     }
     
     /// <summary>

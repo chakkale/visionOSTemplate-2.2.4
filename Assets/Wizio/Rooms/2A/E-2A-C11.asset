@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: E-2A-C11
   m_EditorClassIdentifier: 
   roomName: Bedroom 4
+  dayTextureAddress: SG_Int_E-4D_360_C11
+  nightTextureAddress: SG_Int_E-4D_360_C11
   dayTexture: {fileID: 2800000, guid: f3c7538bd93a048e5895e0951bd50b9e, type: 3}
   nightTexture: {fileID: 2800000, guid: f3c7538bd93a048e5895e0951bd50b9e, type: 3}
   roomPrefab: {fileID: 6258168731178010141, guid: 35fde98e4f5b843aab3d1f17ecef9ae9, type: 3}

@@ -1,0 +1,6 @@
+Assets/Wizio/Renders/**/*.png filter=lfs diff=lfs merge=lfs -text
+Assets/Wizio/Renders/**/*.jpg filter=lfs diff=lfs merge=lfs -text
+Assets/Wizio/Renders/**/*.jpeg filter=lfs diff=lfs merge=lfs -text
+**/*.exr filter=lfs diff=lfs merge=lfs -text
+**/*.hdr filter=lfs diff=lfs merge=lfs -text
+Assets/Wizio/Renders/**/*.exr filter=lfs diff=lfs merge=lfs -text

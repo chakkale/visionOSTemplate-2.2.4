@@ -37,7 +37,7 @@ public class RoomTeleportButton : MonoBehaviour
         }
         
         // Find the XRUIFlowManager in the scene and close the map view
-        XRUIFlowManager uiFlowManager = FindObjectOfType<XRUIFlowManager>();
+        XRUIFlowManager uiFlowManager = FindFirstObjectByType<XRUIFlowManager>();
         if (uiFlowManager != null)
         {
             // Call the same logic as the close button

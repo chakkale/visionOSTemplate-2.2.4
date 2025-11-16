@@ -1,4 +1,7 @@
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEngine.AddressableAssets;
+#endif
 
 [CreateAssetMenu(fileName = "RoomData", menuName = "Archviz/Room Data", order = 1)]
 public class RoomData : ScriptableObject
@@ -6,11 +9,18 @@ public class RoomData : ScriptableObject
     [Header("Room Settings")]
     public string roomName;
     
-    [Header("Day/Night Textures")]
-    [Tooltip("Texture used during day mode")]
+    [Header("Day/Night Textures - Addressables")]
+    [Tooltip("Addressable reference for day mode texture (preferred for remote loading)")]
+    public string dayTextureAddress;
+    
+    [Tooltip("Addressable reference for night mode texture (preferred for remote loading)")]
+    public string nightTextureAddress;
+    
+    [Header("Day/Night Textures - Direct References")]
+    [Tooltip("Direct texture used during day mode (legacy/fallback)")]
     public Texture2D dayTexture;
     
-    [Tooltip("Texture used during night mode")]
+    [Tooltip("Direct texture used during night mode (legacy/fallback)")]
     public Texture2D nightTexture;
     
     [Header("Room Prefab")]
@@ -21,7 +31,34 @@ public class RoomData : ScriptableObject
     public Texture2D roomTexture;
     
     /// <summary>
-    /// Gets the appropriate texture based on the current lighting mode
+    /// Gets the appropriate addressable address based on the current lighting mode
+    /// </summary>
+    /// <param name="isNightMode">True for night mode, false for day mode</param>
+    /// <returns>The addressable address to use for the current lighting mode</returns>
+    public string GetTextureAddressForMode(bool isNightMode)
+    {
+        if (isNightMode)
+        {
+            // Use night texture address if available, otherwise fall back to day texture address
+            return !string.IsNullOrEmpty(nightTextureAddress) ? nightTextureAddress : dayTextureAddress;
+        }
+        else
+        {
+            return dayTextureAddress;
+        }
+    }
+    
+    /// <summary>
+    /// Checks if this room uses addressables for texture loading
+    /// </summary>
+    /// <returns>True if addressable addresses are configured</returns>
+    public bool UsesAddressables()
+    {
+        return !string.IsNullOrEmpty(dayTextureAddress);
+    }
+    
+    /// <summary>
+    /// Gets the appropriate texture based on the current lighting mode (legacy direct reference)
     /// </summary>
     /// <param name="isNightMode">True for night mode, false for day mode</param>
     /// <returns>The texture to use for the current lighting mode</returns>
