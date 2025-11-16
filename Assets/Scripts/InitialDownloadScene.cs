@@ -75,7 +75,7 @@ public class InitialDownloadScene : MonoBehaviour
         long downloadSize = 0;
         bool sizeCheckComplete = false;
         
-        var sizeHandle = Addressables.GetDownloadSizeAsync("Remote_Textures");
+        var sizeHandle = Addressables.GetDownloadSizeAsync("remote");
         sizeHandle.Completed += (op) => {
             if (op.Status == AsyncOperationStatus.Succeeded)
             {
@@ -114,7 +114,7 @@ public class InitialDownloadScene : MonoBehaviour
         
         bool downloadComplete = false;
         
-        var downloadHandle = Addressables.DownloadDependenciesAsync("Remote_Textures");
+        var downloadHandle = Addressables.DownloadDependenciesAsync("remote");
         
         // Track progress
         StartCoroutine(TrackDownloadProgress(downloadHandle, () => downloadComplete));
