@@ -60,11 +60,14 @@ public class InitialDownloadScene : MonoBehaviour
         var initHandle = Addressables.InitializeAsync();
         yield return initHandle;
         
-        if (initHandle.Status != AsyncOperationStatus.Succeeded)
+        if (!initHandle.IsValid() || initHandle.Status != AsyncOperationStatus.Succeeded)
         {
             ShowError("Failed to initialize content system");
+            Addressables.Release(initHandle);
             yield break;
         }
+        
+        Addressables.Release(initHandle);
         
         if (enableDebugLogs)
             Debug.Log("[InitialDownload] Addressables initialized");
@@ -73,18 +76,18 @@ public class InitialDownloadScene : MonoBehaviour
         UpdateStatus("Checking for updates...");
         
         long downloadSize = 0;
-        bool sizeCheckComplete = false;
         
         var sizeHandle = Addressables.GetDownloadSizeAsync("remote");
-        sizeHandle.Completed += (op) => {
-            if (op.Status == AsyncOperationStatus.Succeeded)
-            {
-                downloadSize = op.Result;
-            }
-            sizeCheckComplete = true;
-        };
+        yield return sizeHandle;
         
-        yield return new WaitUntil(() => sizeCheckComplete);
+        if (!sizeHandle.IsValid() || sizeHandle.Status != AsyncOperationStatus.Succeeded)
+        {
+            ShowError("Failed to check download size");
+            Addressables.Release(sizeHandle);
+            yield break;
+        }
+        
+        downloadSize = sizeHandle.Result;
         Addressables.Release(sizeHandle);
         
         if (enableDebugLogs)
@@ -112,35 +115,35 @@ public class InitialDownloadScene : MonoBehaviour
         if (enableDebugLogs)
             Debug.Log($"[InitialDownload] Starting download of {FormatBytes(downloadSize)}");
         
-        bool downloadComplete = false;
-        
         var downloadHandle = Addressables.DownloadDependenciesAsync("remote");
         
         // Track progress
-        StartCoroutine(TrackDownloadProgress(downloadHandle, () => downloadComplete));
-        
-        downloadHandle.Completed += (op) => {
-            if (op.Status == AsyncOperationStatus.Succeeded)
-            {
-                if (enableDebugLogs)
-                    Debug.Log("[InitialDownload] Download completed successfully");
-                downloadComplete = true;
-            }
-            else
-            {
-                Debug.LogError($"[InitialDownload] Download failed: {op.OperationException?.Message}");
-                ShowError($"Download failed: {op.OperationException?.Message ?? "Unknown error"}");
-                downloadFailed = true;
-            }
-        };
-        
-        yield return new WaitUntil(() => downloadComplete || downloadFailed);
-        Addressables.Release(downloadHandle);
-        
-        if (downloadFailed)
+        while (!downloadHandle.IsDone)
         {
+            float progress = downloadHandle.PercentComplete;
+            
+            if (progressBar != null)
+                progressBar.value = progress;
+                
+            if (progressText != null)
+                progressText.text = $"{(progress * 100):F0}%";
+            
+            yield return null;
+        }
+        
+        if (!downloadHandle.IsValid() || downloadHandle.Status != AsyncOperationStatus.Succeeded)
+        {
+            string errorMsg = downloadHandle.OperationException?.Message ?? "Unknown error";
+            Debug.LogError($"[InitialDownload] Download failed: {errorMsg}");
+            ShowError($"Download failed: {errorMsg}");
+            Addressables.Release(downloadHandle);
             yield break;
         }
+        
+        if (enableDebugLogs)
+            Debug.Log("[InitialDownload] Download completed successfully");
+            
+        Addressables.Release(downloadHandle);
         
         // Download complete, proceed to main scene
         UpdateStatus("Content ready!");
