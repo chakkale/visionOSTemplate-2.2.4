@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b67c34e8de2d14b50b64cabb7640902f, type: 3}
   m_Name: E-1D-C01
   m_EditorClassIdentifier: 
-  roomName: E-1D-C01
+  roomName: Kitchen
   dayTexture: {fileID: 2800000, guid: 8df68a5adadb743c2821728ef64825e2, type: 3}
   nightTexture: {fileID: 2800000, guid: 8df68a5adadb743c2821728ef64825e2, type: 3}
   roomPrefab: {fileID: 3183911297692714578, guid: fe706a078b74d41529f80bb6a86d4a86, type: 3}

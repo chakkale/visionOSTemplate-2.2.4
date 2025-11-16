@@ -144,9 +144,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\rTECHNICAL SPECIFICATIONS\n\n3 Bedrooms\n3 Bathrooms\n1 Toilet\n1 Storage
-    Room\n1 Car park (robotic parking space)\r\n\nFLOOR AREA (M\xB2)\n\n196,3 Gross
-    floor area\n312,38 Gross floor area + Communal areas\n7 Balconies\n"
+  m_text: "\rTECHNICAL SPECIFICATIONS\n\n3 Bedrooms\n3 Ensuite bathrooms\n1 Guest
+    bathroom\n1 Storage Room\n1 Valet parking\r\n\nFLOOR AREA (M\xB2)\n\n206,15 Gross
+    floor area\n328,12 Gross floor area + Communal areas\n7 Balconies\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: debd43556a3fb41b08c39e1d5824c96f, type: 2}
   m_sharedMaterial: {fileID: -6187082581794501483, guid: debd43556a3fb41b08c39e1d5824c96f, type: 2}
@@ -211,7 +211,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -1.9315948, w: 0}
+  m_margin: {x: 0, y: 0, z: -75.03807, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   _SortingLayer: 0
