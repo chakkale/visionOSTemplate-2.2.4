@@ -8,7 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Wizio/DownloadScene.unity
     guid: 486fd0644f262466eba0057c6fb6d3c9
-  - enabled: 1
+  - enabled: 0
     path: Assets/Wizio/MainFinal.unity
     guid: 59c040aa457144324b963233e912b06e
   m_configObjects:

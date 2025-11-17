@@ -293,7 +293,24 @@ public class InitialDownloadScene : MonoBehaviour
     
     private void LoadMainScene()
     {
-        SceneManager.LoadScene(mainSceneName);
+        if (enableDebugLogs)
+            Debug.Log($"[InitialDownload] Loading scene '{mainSceneName}' from Addressables...");
+        
+        var sceneHandle = Addressables.LoadSceneAsync(mainSceneName, LoadSceneMode.Single);
+        sceneHandle.Completed += (op) =>
+        {
+            if (op.Status == AsyncOperationStatus.Succeeded)
+            {
+                if (enableDebugLogs)
+                    Debug.Log($"[InitialDownload] Scene '{mainSceneName}' loaded successfully");
+            }
+            else
+            {
+                string error = op.OperationException?.Message ?? "Unknown error";
+                Debug.LogError($"[InitialDownload] Failed to load scene '{mainSceneName}': {error}");
+                ShowError($"Failed to load main scene: {error}");
+            }
+        };
     }
     
     private string FormatBytes(long bytes)
