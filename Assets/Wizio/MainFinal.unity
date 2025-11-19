@@ -551,6 +551,7 @@ MonoBehaviour:
   fadeDuration: 1
   fadeEase: 4
   roomParent: {fileID: 844625607}
+  skyFullMaterial: {fileID: 2100000, guid: 312f3b8669c3a7048bfa5bc9f772383d, type: 2}
 --- !u!4 &423307629
 Transform:
   m_ObjectHideFlags: 0
@@ -1325,7 +1326,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: eb40c8c6c6d044aeea4271ced30ef660, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: eb40c8c6c6d044aeea4271ced30ef660, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.5
@@ -2122,7 +2123,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1029587243
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2130,12 +2131,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1029587242}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4d8069a4740e244fe859286f17b5cf91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   enableDebugLogs: 1
+  verboseLogging: 1
   overallProgress: 0
 --- !u!4 &1029587244
 Transform:

@@ -15,7 +15,7 @@ MonoBehaviour:
   roomName: Living Room
   dayTextureAddress: SG_Int_C-2D_360_C02
   nightTextureAddress: SG_Int_C-2D_360_C02
-  dayTexture: {fileID: 2800000, guid: 481b2df4bbb4a49e885d3096215a6029, type: 3}
-  nightTexture: {fileID: 2800000, guid: 481b2df4bbb4a49e885d3096215a6029, type: 3}
+  dayTexture: {fileID: 0}
+  nightTexture: {fileID: 0}
   roomPrefab: {fileID: 3183911297692714578, guid: 1ff55a26706bd4a379fd2b83475caa2b, type: 3}
-  roomTexture: {fileID: 2800000, guid: 481b2df4bbb4a49e885d3096215a6029, type: 3}
+  roomTexture: {fileID: 0}

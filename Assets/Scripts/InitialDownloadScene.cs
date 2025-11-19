@@ -23,12 +23,14 @@ public class InitialDownloadScene : MonoBehaviour
     private Vector3 progressBarInitialScale;
     
     [Header("Settings")]
-    [SerializeField] private string mainSceneName = "MainFinal";
+    [SerializeField] private string mainSceneAddress = "MainFinal"; // Addressable key for main scene
     [SerializeField] private bool enableDebugLogs = true;
     [SerializeField] private bool skipDownloadInEditor = false; // Skip download when testing in editor
+    [SerializeField] private int maxConcurrentWebRequests = 10; // Increase from default 3
+    [SerializeField] private int catalogRequestsTimeout = 30; // Timeout in seconds
+    [SerializeField] private int bundleTimeout = 60; // Bundle download timeout in seconds
     
-    [Header("Room Data References")]
-    [SerializeField] private RoomData[] allRooms; // Assign all RoomData assets in inspector
+    // Removed: Room data references - no longer needed for initial download
     
     private bool downloadFailed = false;
     
@@ -47,6 +49,16 @@ public class InitialDownloadScene : MonoBehaviour
     private IEnumerator InitializeAndDownload()
     {
         UpdateStatus("Initializing...");
+        
+        // Configure Addressables timeout
+        if (bundleTimeout > 0)
+        {
+            Addressables.WebRequestOverride = (request) => {
+                request.timeout = bundleTimeout;
+            };
+            if (enableDebugLogs)
+                Debug.Log($"[InitialDownload] Set bundle timeout to {bundleTimeout} seconds");
+        }
         
         // Skip download in editor if requested
         #if UNITY_EDITOR
@@ -143,13 +155,13 @@ public class InitialDownloadScene : MonoBehaviour
             yield break;
         }
         
-        // Check download size
+        // Check download size for all remote content
         UpdateStatus("Checking for updates...");
         
         long downloadSize = 0;
         
-        // Get size of content that needs to be downloaded (not cached)
-        var sizeHandle = Addressables.GetDownloadSizeAsync("remote");
+        // Get download size for the main scene and all its dependencies
+        var sizeHandle = Addressables.GetDownloadSizeAsync(mainSceneAddress);
         yield return sizeHandle;
         
         if (!sizeHandle.IsValid() || sizeHandle.Status != AsyncOperationStatus.Succeeded)
@@ -188,20 +200,47 @@ public class InitialDownloadScene : MonoBehaviour
         if (downloadSizeText != null)
             downloadSizeText.text = $"Need to download: {FormatBytes(downloadSize)}";
         
-        // Start download
+        // Start download of main scene and all dependencies
         UpdateStatus("Downloading content...");
         
         if (enableDebugLogs)
-            Debug.Log($"[InitialDownload] Starting download of {FormatBytes(downloadSize)}");
+            Debug.Log($"[InitialDownload] Starting download of MainFinal scene and dependencies: {FormatBytes(downloadSize)}");
         
-        var downloadHandle = Addressables.DownloadDependenciesAsync("remote");
+        var downloadHandle = Addressables.DownloadDependenciesAsync(mainSceneAddress);
         
-        // Track progress - downloadHandle.PercentComplete is 0-1 for the content being downloaded
+        // Track progress with speed calculation
+        float lastProgress = 0f;
+        float lastTime = Time.realtimeSinceStartup;
+        long lastDownloadedBytes = 0;
+        
         while (!downloadHandle.IsDone)
         {
             float progress = downloadHandle.PercentComplete;
             long downloadedBytes = (long)(downloadSize * progress);
             long remainingBytes = downloadSize - downloadedBytes;
+            
+            // Calculate download speed
+            float currentTime = Time.realtimeSinceStartup;
+            float deltaTime = currentTime - lastTime;
+            
+            if (deltaTime >= 1f) // Update speed every second
+            {
+                long bytesDownloaded = downloadedBytes - lastDownloadedBytes;
+                float speed = bytesDownloaded / deltaTime; // bytes per second
+                
+                if (enableDebugLogs && speed > 0)
+                {
+                    Debug.Log($"[InitialDownload] Progress: {(progress * 100):F1}% | Downloaded: {FormatBytes(downloadedBytes)} / {FormatBytes(downloadSize)} | Speed: {FormatBytes((long)speed)}/s | Remaining: {FormatBytes(remainingBytes)} (~{(remainingBytes / Mathf.Max(speed, 1)):F0}s)");
+                }
+                
+                lastProgress = progress;
+                lastTime = currentTime;
+                lastDownloadedBytes = downloadedBytes;
+                
+                // Update UI with speed info
+                if (downloadSizeText != null)
+                    downloadSizeText.text = $"Downloaded: {FormatBytes(downloadedBytes)} / {FormatBytes(downloadSize)}\nRemaining: {FormatBytes(remainingBytes)}\nSpeed: {FormatBytes((long)speed)}/s";
+            }
             
             if (progressBarVisual != null)
             {
@@ -212,9 +251,6 @@ public class InitialDownloadScene : MonoBehaviour
                 
             if (progressText != null)
                 progressText.text = $"{(progress * 100):F0}%";
-            
-            if (downloadSizeText != null)
-                downloadSizeText.text = $"Downloaded: {FormatBytes(downloadedBytes)} / {FormatBytes(downloadSize)}\nRemaining: {FormatBytes(remainingBytes)}";
             
             yield return null;
         }
@@ -294,20 +330,20 @@ public class InitialDownloadScene : MonoBehaviour
     private void LoadMainScene()
     {
         if (enableDebugLogs)
-            Debug.Log($"[InitialDownload] Loading scene '{mainSceneName}' from Addressables...");
+            Debug.Log($"[InitialDownload] Loading scene '{mainSceneAddress}' from Addressables...");
         
-        var sceneHandle = Addressables.LoadSceneAsync(mainSceneName, LoadSceneMode.Single);
+        var sceneHandle = Addressables.LoadSceneAsync(mainSceneAddress, LoadSceneMode.Single);
         sceneHandle.Completed += (op) =>
         {
             if (op.Status == AsyncOperationStatus.Succeeded)
             {
                 if (enableDebugLogs)
-                    Debug.Log($"[InitialDownload] Scene '{mainSceneName}' loaded successfully");
+                    Debug.Log($"[InitialDownload] Scene '{mainSceneAddress}' loaded successfully");
             }
             else
             {
                 string error = op.OperationException?.Message ?? "Unknown error";
-                Debug.LogError($"[InitialDownload] Failed to load scene '{mainSceneName}': {error}");
+                Debug.LogError($"[InitialDownload] Failed to load scene '{mainSceneAddress}': {error}");
                 ShowError($"Failed to load main scene: {error}");
             }
         };

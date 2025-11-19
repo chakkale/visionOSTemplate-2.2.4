@@ -15,7 +15,7 @@ MonoBehaviour:
   roomName: Main Bathroom
   dayTextureAddress: SG_Int_M-2D_360_C03
   nightTextureAddress: SG_Int_M-2D_360_C03
-  dayTexture: {fileID: 2800000, guid: a204c5d955b9c4f2f8600ca236bb8486, type: 3}
-  nightTexture: {fileID: 2800000, guid: a204c5d955b9c4f2f8600ca236bb8486, type: 3}
+  dayTexture: {fileID: 0}
+  nightTexture: {fileID: 0}
   roomPrefab: {fileID: 3183911297692714578, guid: db7c8f53db1c04ff1bc593a45af67cd6, type: 3}
-  roomTexture: {fileID: 2800000, guid: a204c5d955b9c4f2f8600ca236bb8486, type: 3}
+  roomTexture: {fileID: 0}

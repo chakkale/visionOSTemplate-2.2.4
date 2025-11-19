@@ -15,6 +15,7 @@ public class TextureDownloadManager : MonoBehaviour
     
     [Header("Settings")]
     [SerializeField] private bool enableDebugLogs = true;
+    [SerializeField] private bool verboseLogging = true;
     
     [Header("Download Progress")]
     [SerializeField] private float overallProgress = 0f;
@@ -44,6 +45,21 @@ public class TextureDownloadManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+        }
+    }
+    
+    /// <summary>
+    /// Ensures TextureDownloadManager exists in the scene
+    /// Call this before using the manager
+    /// </summary>
+    public static void EnsureInstance()
+    {
+        if (Instance == null)
+        {
+            GameObject go = new GameObject("TextureDownloadManager");
+            Instance = go.AddComponent<TextureDownloadManager>();
+            DontDestroyOnLoad(go);
+            Debug.Log("[TextureDownloadManager] Auto-created instance");
         }
     }
     
@@ -82,15 +98,25 @@ public class TextureDownloadManager : MonoBehaviour
     }
     
     /// <summary>
+    /// Get overall progress of texture loading (0-1)
+    /// </summary>
+    public float GetOverallProgress()
+    {
+        return overallProgress;
+    }
+    
+    /// <summary>
     /// Load a texture asynchronously via Addressables
     /// Returns immediately if already cached
     /// </summary>
     public void LoadTextureAsync(string address, Action<Texture2D> onComplete, Action<string> onError = null)
     {
+        if (verboseLogging)
+            Debug.Log($"[TextureDownloadManager] LoadTextureAsync called with address: '{address}'");
+        
         if (string.IsNullOrEmpty(address))
         {
-            if (enableDebugLogs)
-                Debug.LogWarning("[TextureDownloadManager] Cannot load texture with empty address");
+            Debug.LogWarning("[TextureDownloadManager] Cannot load texture with empty address");
             onError?.Invoke("Empty address");
             return;
         }
@@ -127,10 +153,12 @@ public class TextureDownloadManager : MonoBehaviour
         }
         
         // Start new download
-        if (enableDebugLogs)
-            Debug.Log($"[TextureDownloadManager] Starting download: {address}");
+        Debug.Log($"[TextureDownloadManager] >>> Starting addressable load for: '{address}'");
         
         var handle = Addressables.LoadAssetAsync<Texture2D>(address);
+        
+        if (verboseLogging)
+            Debug.Log($"[TextureDownloadManager] Handle created, IsValid: {handle.IsValid()}");
         activeOperations[address] = handle;
         
         handle.Completed += (op) =>
@@ -328,10 +356,5 @@ public class TextureDownloadManager : MonoBehaviour
             len = len / 1024;
         }
         return $"{len:0.##} {sizes[order]}";
-    }
-    
-    public float GetOverallProgress()
-    {
-        return overallProgress;
     }
 }

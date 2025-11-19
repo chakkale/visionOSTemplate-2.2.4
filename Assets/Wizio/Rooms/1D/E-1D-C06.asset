@@ -15,7 +15,7 @@ MonoBehaviour:
   roomName: Foyer
   dayTextureAddress: SG_Int_D-3D_360_C06
   nightTextureAddress: SG_Int_D-3D_360_C06
-  dayTexture: {fileID: 2800000, guid: 955ad18d0491d420e8eb0ad0067e89b0, type: 3}
-  nightTexture: {fileID: 2800000, guid: 955ad18d0491d420e8eb0ad0067e89b0, type: 3}
+  dayTexture: {fileID: 0}
+  nightTexture: {fileID: 0}
   roomPrefab: {fileID: 3183911297692714578, guid: f2cd583ddf7a54935aa6358dffa7f3cd, type: 3}
-  roomTexture: {fileID: 2800000, guid: 955ad18d0491d420e8eb0ad0067e89b0, type: 3}
+  roomTexture: {fileID: 0}
